@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cinema.mapper.MemberMapper">
+
+    <select id="findByUsername" parameterType="string" resultType="com.cinema.domain.Member">
+        SELECT
+            id,
+            userid,
+            password,
+            name,
+            email,
+            phone,
+            point,
+            mgrade,
+            role,
+            enabled,
+            regdate,
+            deldate
+        FROM
+            member_cinema
+        WHERE
+            userid = #{userid}
+    </select>
+
+    <insert id="insertMember" parameterType="com.cinema.domain.Member">
+        INSERT INTO member_cinema (
+            userid,
+            password,
+            name,
+            email,
+            phone,
+            role,
+            enabled,
+            regdate
+        ) VALUES (
+            #{userid},
+            #{password},
+            #{name},
+            #{email},
+            #{phone},
+            #{role},
+            1,          NOW()       )
+    </insert>
+
+    <select id="existsById" parameterType="string" resultType="int">
+        SELECT COUNT(*)
+        FROM member_cinema
+        WHERE userid = #{userid}
+    </select>
+
+</mapper>
