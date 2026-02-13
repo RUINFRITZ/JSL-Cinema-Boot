@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<div layout:fragment="content">
+    
+    <div style="display: flex; justify-content: center; align-items: center; min-height: 60vh;">
+        
+        <div class="glass-panel" style="width: 400px; padding: 40px;">
+            <h2 style="text-align: center; color: var(--primary-color); margin-bottom: 30px; font-weight: bold;">
+                新規会員登録
+            </h2>
+            
+            <form action="/register" method="post">
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">
+                        ログインID <span style="font-size: 12px; color: #ff4d4d;">(必須)</span>
+                    </label>
+                    <input type="text" name="userid" required placeholder="ログインIDを入力してください"
+                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box;">
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">
+                        パスワード <span style="font-size: 12px; color: #ff4d4d;">(必須)</span>
+                    </label>
+                    <input type="password" name="password" required placeholder="パスワードを入力してください"
+                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box;">
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">
+                        お名前 <span style="font-size: 12px; color: #ff4d4d;">(必須)</span>
+                    </label>
+                    <input type="text" name="name" required placeholder="例：山田 太郎"
+                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box;">
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">
+                        メールアドレス <span style="font-size: 12px; color: #ff4d4d;">(必須)</span>
+                    </label>
+                    <input type="email" name="email" required placeholder="example@jsl.com"
+                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box;">
+                </div>
+                
+				<div style="margin-bottom: 20px;">
+				    <label style="display: block; margin-bottom: 5px; font-weight: 500;">
+				        電話番号 <span style="font-size: 12px; color: #999;">(任意)</span>
+				    </label>
+				    <input type="text" name="phone" placeholder="ハイフンなし (例：09012345678)"
+				           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box;">
+				</div>                
+                
+                <button type="submit" class="btn-primary" style="width: 100%; font-size: 16px; font-weight: bold; margin-top: 10px;">
+                    規約に同意して登録する
+                </button>
+            </form>
+            
+            <div style="text-align: center; margin-top: 25px; font-size: 13px; color: #666;">
+                すでにアカウントをお持ちの方は<br>
+                <a href="/login" style="color: var(--primary-color); font-weight: bold; text-decoration: underline;">こちらからログイン</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+</html>
