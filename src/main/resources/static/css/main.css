@@ -99,9 +99,96 @@ nav a:hover {
 /* コンテンツエリア */
 .container {
     padding-top: 100px; /* Headerの高さ分空ける */
-    max-width: 1200px;
     margin: 0 auto;
     padding-bottom: 50px;
+	
+	/* 基本設定 (FHD 基準) */
+	width: 90%;
+	max-width: 1200px;
+	transition: max-width 0.3s ease;
+}
+
+/* 💻 2K / 4K Monitor 対応 */
+/* 画面幅が 1600px 以上の場合 */
+@media (min-width: 1600px) {
+    .container {
+        max-width: 2200px; /* 幅を広げる (Width Expansion) */
+    }
+}
+
+/* -----------------------------------------------------------
+   Horizontal Scroll Movie List (横スクロール映画リスト)
+   ----------------------------------------------------------- */
+
+/* スクロールコンテナ */
+.movie-scroll-container {
+    display: flex;             /* 横並び */
+    gap: 40px;                 /* アイテム間の間隔 */
+    overflow-x: auto;          /* 横スクロールを有効化 */
+	
+	/* ホバー時の拡大スペース確保 (上部・下部の余白) */
+	padding-top: 40px;
+    padding-bottom: 40px;      /* 下部の影が切れないように余白確保 */
+    padding-left: 20px;        /* 左端の余白 */
+    padding-right: 20px;       /* 右端の余白 */
+    
+	scroll-behavior: smooth;
+    /* スクロールスナップ (Scroll Snap): スマホのようにピタッと止まる */
+    scroll-snap-type: x mandatory; 
+    
+    /* スクロールバーを隠す (Hide Scrollbar) - Chrome, Safari, Opera */
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    /* IE, Edge, Firefox */
+    -ms-overflow-style: none;  
+    scrollbar-width: none;
+}
+
+/* 映画カード */
+.movie-card-xl{
+    /* Flexアイテムの縮小を防ぐ (Don't shrink) */
+    flex: 0 0 auto;
+    
+    /* サイズ設定 */
+    width: 400px;   /* Poster Ratio 2:3 */
+    height: 600px;
+    
+    /* デザイン継承 (Glassmorphism) */
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(8px);
+	
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+	
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    
+    /* 内部整列 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-weight: bold;
+    font-size: 1.5rem;
+    
+    /* スクロールスナップの位置合わせ */
+    scroll-snap-align: center;
+    
+    /* ホバー効果 */
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    cursor: pointer;
+	position: relative;
+}
+
+/* ホバー時に少し浮き上がる */
+.movie-card-xl:hover {
+    transform: translateY(-20px) scale(1.02);
+    
+    box-shadow: 0 20px 50px rgba(255, 107, 0, 0.3);
+    border-color: var(--primary-color);
+    
+    background: rgba(255, 255, 255, 0.4);
+    z-index: 10; 
 }
 
 /* フッター */

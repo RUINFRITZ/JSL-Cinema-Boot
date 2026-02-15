@@ -5,7 +5,7 @@
 
 <div layout:fragment="content">
     
-    <div class="glass-panel" style="padding: 42px 50px; text-align: center; margin-bottom: 40px;">
+    <div class="glass-panel" style="padding: 42px 50px; text-align: center; margin-bottom: 15px;">
         
         <p style="font-size: 0.9rem; color: var(--primary-color); font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px;">
             JSL CINEMA <span style ="color : gray">REMASTER</span>
@@ -25,30 +25,32 @@
         </a>
     </div>
 
-    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
-        <div class="glass-panel" style="height: 300px; display: flex; align-items: center; justify-content: center;">
-            Movie Poster 1
-        </div>
-        <div class="glass-panel" style="height: 300px; display: flex; align-items: center; justify-content: center;">
-            Movie Poster 2
-        </div>
-        <div class="glass-panel" style="height: 300px; display: flex; align-items: center; justify-content: center;">
-            Movie Poster 3
-        </div>
-        <div class="glass-panel" style="height: 300px; display: flex; align-items: center; justify-content: center;">
-            Movie Poster 4
-        </div>
-    </div>
+	<div class="movie-scroll-container" id="movieScroll">
+	        
+	        <div class="movie-card-xl">Movie Poster 1</div>
+	        <div class="movie-card-xl">Movie Poster 2</div>
+	        <div class="movie-card-xl">Movie Poster 3</div>
+	        <div class="movie-card-xl">Movie Poster 4</div>
+	        <div class="movie-card-xl">Movie Poster 5</div>
+	        <div class="movie-card-xl">Movie Poster 6</div>
+	        <div class="movie-card-xl">Movie Poster 7</div>
+	        <div class="movie-card-xl">Movie Poster 8</div>
+
+	</div>
 
 	<script>
         document.addEventListener('DOMContentLoaded', function () {
             
-            // 1. URLパラメータから 'welcome' を探す
+			// -------------------------------------------------------
+            // 1. ログイン成功トースト通知 (Login Success Toast)
+            // -------------------------------------------------------
+			
+            // 01. URLパラメータから 'welcome' を探す
             const urlParams = new URLSearchParams(window.location.search);
             const isWelcome = urlParams.get('welcome');
 
             if (isWelcome) {
-                // 2. SweetAlert2 Toast Mixin 設定 (トースト設定)
+                // 02. SweetAlert2 Toast Mixin 設定 (トースト設定)
                 const Toast = Swal.mixin({
                     toast: true,               // トーストモード有効
                     position: 'top-end',       // 右上に表示
@@ -61,7 +63,7 @@
                     }
                 });
 
-                // 3. トースト発火 (Fire!)
+                // 03. トースト発火 (Fire!)
                 Toast.fire({
                     icon: 'success',
                     title: 'ようこそ！ログインしました。'
@@ -72,6 +74,25 @@
                 const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
                 window.history.replaceState({path: newUrl}, '', newUrl);
             }
+			
+			// -------------------------------------------------------
+	        // 2. マウスホイールによる横スクロール (Horizontal Scroll)
+	        // -------------------------------------------------------
+	        const scrollContainer = document.getElementById("movieScroll");
+	
+	        if (scrollContainer) {
+	            scrollContainer.addEventListener("wheel", (evt) => {
+	                // デフォルトの縦スクロール動作を無効化
+	                evt.preventDefault();
+	                
+					// [修正] scrollBy を使用して滑らかに移動 (Smooth Scroll)
+                    // behavior: 'smooth' を指定することで、カクカクせず流れるように動きます。
+                    scrollContainer.scrollBy({
+                        left: evt.deltaY * 4, // 移動距離 (Multiplier)
+                        behavior: 'smooth'    // 滑らかなアニメーション
+                    });
+	            });
+	        }
         });
     </script>
 
