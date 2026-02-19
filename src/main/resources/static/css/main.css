@@ -45,16 +45,19 @@ body {
     border-radius: 16px;
 }
 
-/* ヘッダー */
+/* -----------------------------------------------------------
+   Responsive Header & Navigation (ヘッダー＆ナビゲーション)
+   ----------------------------------------------------------- */
+
 header {
-    position: fixed; /* 上部に固定 */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 70px;
+    height: 80px; /* 高さ固定 */
     z-index: 1000;
     
-    /* Header専用のガラス効果 */
+    /* ヘッダー専用のグラスモーフィズム */
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(15px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
@@ -66,45 +69,232 @@ header {
     box-sizing: border-box;
 }
 
-/* ロゴ */
+/* 1. ロゴ (Logo) */
 .logo {
     font-size: 24px;
     font-weight: 800;
-    color: var(--primary-color); /* JSL Orange */
+    color: var(--primary-color);
     text-decoration: none;
     letter-spacing: -1px;
+    z-index: 1002;
+    white-space: nowrap; /* 折り返し防止 */
 }
 
-/* ナビゲーション */
-nav ul {
-    list-style: none;
-    display: flex;
-    gap: 30px;
-    margin: 0;
-    padding: 0;
-    align-items: center;
+/* 2. 中央検索バー (Center Search Bar) */
+.search-container {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%); /* 画面中央に完全配置 */
+    width: 400px;
+    z-index: 1001;
 }
 
-nav a {
-    text-decoration: none;
+.search-form {
+    position: relative;
+    width: 100%;
+}
+
+/* 検索入力フィールド */
+.search-input {
+    width: 100%;
+    padding: 10px 45px 10px 20px;
+    border-radius: 50px;
+    border: 1px solid rgba(0,0,0,0.1);
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(5px);
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
     color: var(--text-main);
-    font-weight: 500;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1);
+}
+
+/* 検索ボタンアイコン */
+.btn-search {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    font-size: 1rem;
     transition: color 0.3s;
 }
 
-nav a:hover {
+.btn-search:hover {
     color: var(--primary-color);
+}
+
+/* 3. 右側ナビゲーションエリア (Right Icons Area) */
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    z-index: 1002;
+}
+
+/* ログインボタン */
+.btn-header-login {
+    padding: 8px 24px;
+    border: 1px solid var(--text-main);
+    border-radius: 30px;
+    text-decoration: none;
+    color: var(--text-main);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+}
+
+.btn-header-login:hover {
+    background: var(--text-main);
+    color: #ffffff;
+    border-color: var(--text-main);
+}
+
+/* チケットアイコン */
+.icon-ticket {
+    font-size: 1.6rem;
+    color: var(--text-main);
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+}
+
+.icon-ticket:hover {
+    color: var(--primary-color);
+    transform: scale(1.1);
+}
+
+/* ハンバーガーアイコン */
+.hamburger-icon {
+    font-size: 1.5rem;
+    color: var(--text-main);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.hamburger-icon:hover {
+    color: var(--primary-color);
+}
+
+/* 4. ドロップダウンメニュー (Dropdown Menu) */
+.dropdown-menu {
+    /* [修正] display: none を削除し、flex でレイアウトを維持しつつ隠す */
+    /* display: none;  <-- これがあるとアニメーションしません */
+    display: flex; 
+    
+    /* [修正] visibility と opacity で隠す (Hide using visibility & opacity) */
+    visibility: hidden;
+    opacity: 0;
+    
+    /* 位置設定 (Positioning) */
+    position: absolute;
+    top: 62px;
+    right: 40px;
+    width: 260px;
+    
+    /* グラスモーフィズム (Glassmorphism) */
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    padding: 15px;
+    
+    flex-direction: column;
+    gap: 5px;
+    z-index: 2000;
+    
+    /* [修正] アニメーション初期位置: 少し上に配置 (Start position: Slightly above) */
+    transform: translateY(-20px); 
+    
+    /* トランジション設定 (Transition) */
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); /* Natural Ease Out */
+}
+
+/* 表示状態クラス (Active State) */
+.dropdown-menu.show {
+    /* [修正] display: flex は不要 (元々flexなので) */
+    
+    /* 見えるようにする (Reveal) */
+    visibility: visible;
+    opacity: 1;
+    
+    /* 元の位置に戻る (Slide down to original position) */
+    transform: translateY(0);
+}
+
+/* メニューアイテム */
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    text-decoration: none;
+    color: var(--text-main);
+    font-weight: 500;
+    border-radius: 10px;
+    transition: all 0.2s;
+}
+
+.menu-item:hover {
+    background: rgba(255, 107, 0, 0.1); /* 薄いオレンジ背景 */
+    color: var(--primary-color);
+    transform: translateX(5px);
+}
+
+.menu-item i {
+    width: 25px;
+    text-align: center;
+    margin-right: 10px;
+}
+
+/* 区切り線 */
+.divider {
+    height: 1px;
+    background: rgba(0, 0, 0, 0.05);
+    margin: 5px 0;
+}
+
+/* -----------------------------------------------------------
+   Mobile Responsive Styles (Max-Width: 768px)
+   ----------------------------------------------------------- */
+@media (max-width: 768px) {
+    header {
+        padding: 0 20px;
+    }
+    
+    /* モバイルでは検索バーを非表示 (またはハンバーガー内に移動) */
+    .search-container {
+        display: none;
+    }
+    
+    /* ドロップダウンの位置調整 */
+    .dropdown-menu {
+        right: 20px;
+        width: 220px;
+    }
 }
 
 /* コンテンツエリア */
 .container {
-    padding-top: 100px; /* Headerの高さ分空ける */
+    padding-top: 122px; /* Headerの高さ分空ける */
     margin: 0 auto;
-    padding-bottom: 50px;
+    padding-bottom: 22px;
 	
 	/* 基本設定 (FHD 基準) */
 	width: 90%;
-	max-width: 1200px;
+	max-width: 1332px;
 	transition: max-width 0.3s ease;
 }
 

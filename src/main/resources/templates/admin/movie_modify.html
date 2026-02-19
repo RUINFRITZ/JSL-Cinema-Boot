@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<div layout:fragment="content">
+
+    <style>
+        /* [Page-Specific Override] コンテナ位置調整 */
+        .container {
+            padding-top: 38px !important;
+            max-width: 1000px !important; 
+        }
+
+        /* フォームラベルスタイル */
+        .form-label {
+            display: block;
+            font-weight: 700;
+            color: #444;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        /* 入力フィールドスタイル (Glassmorphism Input) */
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.5); 
+            backdrop-filter: blur(5px);
+            font-size: 1rem;
+            color: #333;
+            transition: all 0.3s ease;
+            box-sizing: border-box; 
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 150px;
+            line-height: 1.6;
+        }
+
+        /* ファイルアップロードエリア */
+        .file-upload-wrapper {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        /* ポスタープレビュー枠 */
+        .poster-preview {
+            width: 200px;
+            height: 300px;
+            border: 2px dashed #ddd;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.3);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .poster-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* 既存画像がある場合は表示する設定はインラインスタイルで行います */
+        }
+
+        .poster-preview span {
+            color: #999;
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: flex-end; 
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .btn-secondary:hover { background-color: #5a6268; }
+    </style>
+
+    <div class="container">
+        
+        <h2 style="margin-bottom: 30px; font-weight: 800; color: #333;">
+            <i class="fa-solid fa-pen-to-square" style="color: var(--primary-color); margin-right: 10px;"></i>
+            映画情報修正
+        </h2>
+
+        <div class="glass-panel" style="padding: 40px;">
+            
+            <form action="/admin/movie/modify" method="post" enctype="multipart/form-data">
+                
+                <input type="hidden" name="mno" th:value="${movie.mno}">
+                
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 25px;">
+                    <div>
+                        <label for="title" class="form-label">映画タイトル<span style="color:red">*</span></label>
+                        <input type="text" id="title" name="title" class="form-control" th:value="${movie.title}" required>
+                    </div>
+                    <div>
+                        <label for="opendate" class="form-label">公開日</label>
+                        <input type="date" id="opendate" name="opendate" class="form-control" th:value="${movie.opendate}" required>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <label for="catchphrase" class="form-label">キャッチコピー</label>
+                    <input type="text" id="catchphrase" name="catchphrase" class="form-control" th:value="${movie.catchphrase}">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px;">
+                    <div>
+                        <label for="runtime" class="form-label">上映時間 (Runtime / min)</label>
+                        <input type="number" id="runtime" name="runtime" class="form-control" th:value="${movie.runtime}">
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <label class="form-label">ポスター画像</label>
+                    
+                    <div class="file-upload-wrapper">
+                        <div class="poster-preview" id="previewBox">
+                            <span th:style="${movie.poster != null} ? 'display:none;' : 'display:block;'">No Image</span>
+                            <img id="previewImg" 
+                                 th:src="${movie.poster != null} ? @{'/upload/' + ${movie.poster}} : '#'" 
+                                 th:style="${movie.poster != null} ? 'display:block;' : 'display:none;'" 
+                                 alt="Preview">
+                        </div>
+                        
+                        <div style="flex: 1;">
+                            <input type="file" id="file" name="file" class="form-control" accept="image/*" onchange="previewImage(this)">
+                            <p style="margin-top: 10px; color: #666; font-size: 0.85rem;">
+                                * 新しい画像を選択すると上書きされます。<br>
+                                * 既存の画像を維持する場合は、ファイルを選択しないでください。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <label for="content" class="form-label">あらすじ (Synopsis)</label>
+                    <textarea id="content" name="content" class="form-control" th:text="${movie.content}"></textarea>
+                </div>
+
+                <hr style="border: 0; border-top: 1px solid rgba(0,0,0,0.1);">
+
+                <div class="btn-group">
+                    <a href="/admin/movie/list" class="btn-secondary">キャンセル</a>
+                    <button type="submit" class="btn-primary" style="font-size: 1rem; padding: 12px 40px;">修正する</button>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+
+    <script>
+        function previewImage(input) {
+            const previewBox = document.getElementById('previewBox');
+            const previewImg = document.getElementById('previewImg');
+            const placeholder = previewBox.querySelector('span');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    previewImg.style.display = 'block';
+                    placeholder.style.display = 'none';
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+
+</div>
+</html>

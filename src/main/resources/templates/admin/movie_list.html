@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<div layout:fragment="content">
+
+    <style>
+        /* [Page-Specific Override] */
+        .container {
+            padding-top: 38px !important;
+            max-width: 1400px !important;
+        }
+
+        /* テーブルスタイル (Dashboardと同じスタイルを適用) */
+        .custom-table { width: 100%; border-collapse: collapse; margin-top: 5px; }
+        .custom-table th { text-align: left; padding: 15px; border-bottom: 2px solid #eee; color: #555; font-weight: 700; background: rgba(255,255,255,0.5); }
+        .custom-table td { padding: 15px; border-bottom: 1px solid #f0f0f0; color: #444; vertical-align: middle; }
+        .custom-table tr:hover { background: rgba(255, 107, 0, 0.05); }
+
+        /* ポスターサムネイル */
+        .poster-thumb {
+            width: 50px; height: 75px;
+            object-fit: cover;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* アクションボタン */
+        .btn-action {
+            padding: 6px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 5px;
+            display: inline-block;
+        }
+        .btn-edit { background: #e3f2fd; color: #1976d2; }
+        .btn-delete { background: #ffebee; color: #c62828; border: none; cursor: pointer; }
+
+        /* 上部ヘッダーエリア */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+    </style>
+
+    <div class="container">
+        
+        <div class="page-header">
+            <h2 style="margin: 0; font-weight: 800; color: #333;">
+                <i class="fa-solid fa-film" style="color: var(--primary-color); margin-right: 10px;"></i>
+                映画管理
+            </h2>
+            
+            <a href="/admin/movie/register" class="btn-primary" style="padding: 12px 25px; box-shadow: 0 4px 10px rgba(255,107,0,0.3);">
+                <i class="fa-solid fa-plus"></i> 新規登録
+            </a>
+        </div>
+
+        <div class="glass-panel" style="padding: 30px;">
+            
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th style="width: 5%;">No.</th>
+                        <th style="width: 10%;">Poster</th>
+                        <th style="width: 35%;">Title</th>
+                        <th style="width: 15%;">Release Date</th>
+                        <th style="width: 10%;">Running Time</th>
+                        <th style="width: 10%;">Status</th> <th style="width: 15%;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="movie : ${list}">
+                        <td th:text="${movie.mno}">1</td>
+                        <td>
+                            <img th:if="${movie.poster != null}" th:src="@{'/upload/' + ${movie.poster}}" class="poster-thumb" alt="Poster">
+                            <span th:unless="${movie.poster != null}" style="color:#ccc;">No Image</span>
+                        </td>
+                        <td>
+                            <strong th:text="${movie.title}" style="font-size: 1.05rem;">Gladiator 2</strong>
+                            <div style="font-size: 0.85rem; color: #888; margin-top: 5px;" th:text="${movie.catchphrase}">Catchphrase here</div>
+                        </td>
+                        <td th:text="${movie.opendate}">2026-02-11</td>
+                        <td><span th:text="${movie.runtime}">120</span> min</td>
+                        <td>
+                            <span class="status-badge status-paid">上映中</span>
+                        </td>
+                        <td>
+                            <a th:href="@{/admin/movie/detail(mno=${movie.mno})}" class="btn-action btn-edit">
+                                <i class="fa-solid fa-pen"></i> 編集
+                            </a>
+                            
+                            <form action="/admin/movie/delete" method="post" style="display:inline;" onsubmit="return confirm('本当に削除しますか？ (Are you sure?)');">
+                                <input type="hidden" name="mno" th:value="${movie.mno}">
+                                <button type="submit" class="btn-action btn-delete">
+                                    <i class="fa-solid fa-trash"></i> 削除
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    
+                    <tr th:if="${list == null or list.isEmpty()}">
+                        <td colspan="7" style="text-align: center; padding: 50px; color: #888;">
+                            <i class="fa-regular fa-folder-open" style="font-size: 3rem; margin-bottom: 15px; display: block;"></i>
+                            登録された映画がありません。<br>右上のボタンから新規登録してください。
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+</html>

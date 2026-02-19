@@ -1,23 +1,22 @@
 <!DOCTYPE html>
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JSL Cinema REMASTER</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" th:href="@{/css/main.css}">
-    
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <link rel="stylesheet" th:href="@{/css/main.css}">
     
     <th:block layout:fragment="css"></th:block>
 </head>
@@ -25,34 +24,101 @@
 <body>
 
     <header>
-        <a href="/" class="logo">JSL CINEMA <span style="font-size:12px; color:#999;">REMASTER</span></a>
-        
-        <nav>
-            <ul>
-                <li th:if="${#authentication.name == 'anonymousUser'}">
-                    <a href="/login">ログイン</a>
-                </li>
-                <li th:if="${#authentication.name == 'anonymousUser'}">
-                    <a href="/register" class="btn-primary" style="padding: 5px 15px;">会員登録</a>
-                </li>
+        <a href="/" class="logo">
+            JSL CINEMA <span style="font-size:0.5em; color:#999;">REMASTER</span>
+        </a>
 
-                <li th:unless="${#authentication.name == 'anonymousUser'}">
-                    <span th:text="${#authentication.name} + ' 様'" style="font-weight:bold;">ユーザー様</span>
-                </li>
-                <li th:unless="${#authentication.name == 'anonymousUser'}">
-                    <a href="/logout">ログアウト</a>
-                </li>
-            </ul>
-        </nav>
+        <div class="search-container">
+            <form th:action="@{/movie/list}" method="get" class="search-form">
+                <input type="text" name="keyword" class="search-input" 
+                       placeholder="映画、監督、俳優を検索..." 
+                       th:value="${param.keyword}">
+                <button type="submit" class="btn-search">
+                    <i class="fa-solid fa-search"></i>
+                </button>
+            </form>
+        </div>
+
+        <div class="nav-right">
+            
+            <th:block sec:authorize="isAnonymous()">
+                <a href="/login" class="btn-header-login">LOGIN</a>
+            </th:block>
+
+            <th:block sec:authorize="isAuthenticated()">
+                <a href="/ticket/my" class="icon-ticket" title="My Ticket">
+                    <i class="fa-solid fa-ticket"></i>
+                </a>
+            </th:block>
+
+            <i class="fa-solid fa-bars hamburger-icon" id="hamburgerBtn"></i>
+
+            <div class="dropdown-menu" id="dropdownMenu">
+                
+                <div sec:authorize="isAuthenticated()" style="padding: 10px 15px; margin-bottom: 5px;">
+                    <span style="font-size: 0.85rem; color: #888;">Welcome,</span><br>
+                    <strong style="font-size: 1.1rem; color: #333;">
+                        <span sec:authentication="name">User</span> 様
+                    </strong>
+                </div>
+
+                <div sec:authorize="isAuthenticated()" class="divider"></div>
+
+                <a href="/movie/list" class="menu-item">
+                    <i class="fa-solid fa-film"></i> 映画一覧
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fa-solid fa-solid fa-headset"></i> お客様サポート
+                </a>
+                
+                <th:block sec:authorize="hasRole('ADMIN')">
+                    <div class="divider"></div>
+                    <span style="font-size: 0.75rem; color: #999; padding-left: 15px; margin-top: 5px;">ADMIN MENU</span>
+                    <a href="/admin" class="menu-item" style="color: #E67E22;">
+                        <i class="fa-solid fa-chart-line"></i> ダッシュボード
+                    </a>
+                    <a href="/admin/movie/list" class="menu-item" style="color: #E67E22;">
+                        <i class="fa-solid fa-clapperboard"></i> 映画管理
+                    </a>
+                </th:block>
+
+                <th:block sec:authorize="isAuthenticated()">
+                    <div class="divider"></div>
+                    <a href="/logout" class="menu-item" style="color: #c0392b;">
+                        <i class="fa-solid fa-right-from-bracket"></i> ログアウト
+                    </a>
+                </th:block>
+            </div>
+
+        </div>
     </header>
 
-    <div layout:fragment="content" class="container">
-        </div>
+    <div layout:fragment="content" class="container"></div>
 
     <footer>
         <p>&copy; 2026 JSL Cinema Remaster Project. All rights reserved.</p>
         <p>Designed by RUINFRITZ</p>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const hamburger = document.getElementById('hamburgerBtn');
+            const dropdown = document.getElementById('dropdownMenu');
+
+            // Toggle Menu
+            hamburger.addEventListener('click', (e) => {
+                e.stopPropagation(); 
+                dropdown.classList.toggle('show');
+            });
+
+            // Close on outside click
+            document.addEventListener('click', (e) => {
+                if (!dropdown.contains(e.target) && e.target !== hamburger) {
+                    dropdown.classList.remove('show');
+                }
+            });
+        });
+    </script>
 
     <th:block layout:fragment="script"></th:block>
 

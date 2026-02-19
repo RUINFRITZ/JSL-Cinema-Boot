@@ -47,12 +47,16 @@ public class SecurityConfig {
             // 2. HTTP リクエストの認可設定 (URLごとのアクセス権限)
             .authorizeHttpRequests(auth -> auth
                 // CSS, JS, 画像などの静的リソースは認証なしでアクセス許可 (permitAll)
+                // [追加] '/upload/**' : アップロードされたポスター画像へのアクセスを許可します (WebMvcConfigと連携)
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/upload/**").permitAll()
                 
                 // 公開ページ (メイン、ログイン、会員登録) は誰でもアクセス可能
+                // [追加] '/movie/**' : 映画リストや詳細ページはログインなしでも閲覧可能にします
                 .requestMatchers("/", "/login", "/register", "/movie/**").permitAll()
                 
-                // 管理者専用ページ (URLが /admin/ で始まる場合)
+                // [追加] 管理者専用ページ設定
+                // URLが '/admin/' で始まるリクエストは 'ADMIN' 権限を持つユーザーのみアクセス可能
+                // 一般ユーザーがアクセスしようとすると 403 (Forbidden) エラーまたはログイン画面へ転送されます
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 
                 // その他のすべてのリクエストは認証 (ログイン) が必要
