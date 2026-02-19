@@ -41,7 +41,9 @@
             #{email},
             #{phone},
             #{role},
-            1,          NOW()       )
+            1,
+            NOW()
+        )
     </insert>
 
     <select id="existsById" parameterType="string" resultType="int">

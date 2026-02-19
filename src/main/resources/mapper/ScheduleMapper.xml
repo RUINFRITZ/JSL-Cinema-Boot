@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cinema.mapper.ScheduleMapper">
+
+    <select id="selectAllTheaters" resultType="java.util.Map">
+        SELECT tno, tname, total_seats 
+        FROM theater 
+        ORDER BY tno ASC
+    </select>
+
+    <insert id="insertSchedule" parameterType="com.cinema.domain.Schedule">
+        INSERT INTO schedule (mno, tno, sdate) VALUES (#{mno}, #{tno}, #{sdate})
+    </insert>
+
+</mapper>

@@ -36,8 +36,7 @@
     </update>
 
     <delete id="deleteMovie" parameterType="long">
-        DELETE FROM movie 
-        WHERE mno = #{mno}
+        DELETE FROM movie WHERE mno = #{mno}
     </delete>
 
 </mapper>
