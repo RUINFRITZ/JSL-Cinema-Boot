@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<div layout:fragment="content">
+
+    <style>
+        /* [Page-Specific Override] コンテナ位置調整 */
+        .container {
+            /* ダッシュボードに合わせて上部余白を調整 */
+            padding-top: 42px !important;
+            max-width: 800px !important; /* フォームなので少し狭めに設定 (Form width) */
+        }
+
+        /* フォームラベルスタイル (Form Label) */
+        .form-label {
+            display: block;
+            font-weight: 700;
+            color: #444;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        /* 入力フィールドスタイル (Glassmorphism Input) */
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.5); /* 半透明 (Semi-transparent) */
+            backdrop-filter: blur(5px);
+            font-size: 1rem;
+            color: #333;
+            transition: all 0.3s ease;
+            box-sizing: border-box; 
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1);
+        }
+
+        /* セレクトボックスの矢印カスタマイズ (Optional) */
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 15px;
+        }
+
+        /* ボタンエリア (Button Area) */
+        .btn-group {
+            display: flex;
+            justify-content: flex-end; /* 右寄せ */
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .btn-secondary:hover { background-color: #5a6268; }
+    </style>
+
+    <div class="container">
+        
+        <h2 style="margin-bottom: 30px; font-weight: 800; color: #333;">
+            <i class="fa-solid fa-calendar-plus" style="color: var(--primary-color); margin-right: 10px;"></i>
+            上映スケジュール登録
+        </h2>
+
+        <div class="glass-panel" style="padding: 40px;">
+            
+            <form action="/admin/schedule/register" method="post">
+                
+                <div style="margin-bottom: 25px;">
+                    <label for="mno" class="form-label">映画選択<span style="color:red">*</span></label>
+                    <select id="mno" name="mno" class="form-control" required>
+                        <option value="">-- 映画を選択してください --</option>
+                        <th:block th:each="movie : ${movieList}">
+                            <option th:value="${movie.mno}" th:text="${movie.title}"></option>
+                        </th:block>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <label for="tno" class="form-label">スクリーン選択<span style="color:red">*</span></label>
+                    <select id="tno" name="tno" class="form-control" required>
+                        <option value="">-- スクリーンを選択してください --</option>
+                        <th:block th:each="theater : ${theaterList}">
+                            <option th:value="${theater.tno}" th:text="${theater.tname} + ' (総座席: ' + ${theater.total_seats} + '席)'"></option>
+                        </th:block>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 35px;">
+                    <label for="sdate" class="form-label">上映開始日時<span style="color:red">*</span></label>
+                    <input type="datetime-local" id="sdate" name="sdate" class="form-control" required>
+                </div>
+
+                <hr style="border: 0; border-top: 1px solid rgba(0,0,0,0.1);">
+
+                <div class="btn-group">
+                    <a href="/admin/home" class="btn-secondary">キャンセル</a>
+                    <button type="submit" class="btn-primary" style="font-size: 1rem; padding: 12px 40px;">登録する</button>
+                </div>
+
+            </form>
+        </div>
+
+		<script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener('DOMContentLoaded', function() {
+            // コントローラーから渡されたフラッシュメッセージ 'msg' を取得
+            // AdminMovieControllerに合わせてキーを 'msg' に統一しています。
+            const successMessage = /*[[${msg}]]*/ null;
+            
+            if (successMessage) {
+                // SweetAlert2 Toastの設定
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'bottom-end',      // 登録ボタンの近く（画面右下）に配置
+                    showConfirmButton: false,    // OKボタンを非表示
+                    timer: 2222,                 // 2.2秒後に自動的に消える
+                    timerProgressBar: true,      // プログレスバーを表示
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer);
+                        toast.addEventListener('mouseleave', Swal.resumeTimer);
+                    }
+                });
+
+                // トーストを表示 (Fire the toast)
+                Toast.fire({
+                    icon: 'success',
+                    title: successMessage
+                });
+            }
+        });
+        /*]]>*/
+ 	   </script>
+
+    </div>
+
+</div>
+</html>

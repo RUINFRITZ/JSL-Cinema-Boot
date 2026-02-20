@@ -11,10 +11,7 @@
     <style>
 		/* [追加] このページ専用のコンテナ上書き設定 (Page-Specific Override) */
         .container {
-            /* 1. 上部余白を減らす */
             padding-top: 42px !important;
-            
-            /* 2. ダッシュボードなので幅を少し広げる (Optional) */
             max-width: 1400px !important; 
         }    
     
@@ -50,7 +47,7 @@
         /* チャートエリア */
         .chart-grid {
             display: grid;
-            grid-template-columns: 2fr 1fr; /* 2:1 Ratio */
+            grid-template-columns: 2fr 1fr;
             gap: 20px;
             margin-bottom: 30px;
         }
@@ -79,27 +76,33 @@
         <div class="dashboard-grid">
             <div class="glass-panel stat-card">
                 <div class="stat-info">
-                    <h3>12.5M</h3>
-                    <p>本日の売上 (JPY)</p>
+                    <h3 th:text="${todayRevenue != null ? #numbers.formatInteger(todayRevenue, 1, 'COMMA') : '0'}">12.5M</h3>
+                    <p>本日の売上 (KRW)</p>
                 </div>
-                <div class="stat-icon"><i class="fa-solid fa-yen-sign"></i></div>
+                <div class="stat-icon"><i class="fa-solid fa-won-sign"></i></div>
             </div>
+            
             <div class="glass-panel stat-card">
                 <div class="stat-info">
-                    <h3>78%</h3>
-                    <p>リアルタイム予約率</p> </div>
+                    <h3 th:text="${reservationRate != null ? reservationRate : '0'} + '%'">78%</h3>
+                    <p>リアルタイム予約率</p> 
+                </div>
                 <div class="stat-icon"><i class="fa-solid fa-ticket"></i></div>
             </div>
+            
             <div class="glass-panel stat-card">
                 <div class="stat-info">
-                    <h3>1,024</h3>
-                    <p>総会員数</p> </div>
+                    <h3 th:text="${totalMembers != null ? #numbers.formatInteger(totalMembers, 1, 'COMMA') : '0'}">1,024</h3>
+                    <p>総会員数</p> 
+                </div>
                 <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
             </div>
+            
             <div class="glass-panel stat-card" onclick="location.href='/admin/movie/list'" style="cursor: pointer;">
                 <div class="stat-info">
-                    <h3>8</h3>
-                    <p>現在上映中</p> </div>
+                    <h3 th:text="${activeMovies != null ? activeMovies : '0'}">8</h3>
+                    <p>現在上映中</p> 
+                </div>
                 <div class="stat-icon"><i class="fa-solid fa-film"></i></div>
             </div>
         </div>
@@ -122,103 +125,102 @@
                 <span>最新の予約状況</span>
                 <a href="#" style="font-size: 0.9rem; color: var(--primary-color); text-decoration: none;">一覧を見る ></a>
             </div>
+            
             <table class="custom-table">
                 <thead>
                     <tr>
-                        <th>予約番号</th> <th>会員名</th>   <th>作品名</th>   <th>上映日時</th> <th>決済金額</th> <th>決済状態</th> </tr>
+                        <th>予約番号</th> 
+                        <th>会員ID</th>   
+                        <th>作品名</th>   
+                        <th>決済日時</th> 
+                        <th>決済金額</th> 
+                        <th>決済状態</th> 
+                    </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>#1023</td>
-                        <td>キム・チョルス</td> <td>グラディエーターII</td>
-                        <td>2026-02-19 10:30</td>
-                        <td>₩ 15,000</td>
-                        <td><span class="status-badge status-paid">決済完了</span></td> </tr>
-                    <tr>
-                        <td>#1022</td>
-                        <td>イ・ヨンヒ</td> <td>ラ・ラ・ランド</td>
-                        <td>2026-02-19 10:15</td>
-                        <td>₩ 28,000</td>
-                        <td><span class="status-badge status-paid">決済完了</span></td>
+                    <tr th:each="res : ${recentList}">
+                        <td th:text="'#' + ${res.rno}">#1023</td>
+                        <td th:text="${res.userid}">user01</td>
+                        <td th:text="${res.movie_title}">GLADIATOR 2</td>
+                        <td th:text="${#dates.format(res.rdate, 'yyyy-MM-dd HH:mm')}">2026-02-19 10:30</td>
+                        <td th:text="'₩ ' + ${#numbers.formatInteger(res.price, 1, 'COMMA')}">₩ 15,000</td>
+                        <td>
+                            <span th:if="${res.status == 'PAID'}" class="status-badge status-paid">決済完了</span>
+                            <span th:if="${res.status == 'CANCEL'}" class="status-badge status-cancel">取消済み</span>
+                        </td>
                     </tr>
-                    <tr>
-                        <td>#1021</td>
-                        <td>パク・チソン</td> <td>アイアンマン</td>
-                        <td>2026-02-19 09:45</td>
-                        <td>₩ 14,000</td>
-                        <td><span class="status-badge status-cancel">取消済み</span></td> </tr>
-                    <tr>
-                        <td>#1020</td>
-                        <td>チェ・ミンホ</td> <td>トランスフォーマー</td>
-                        <td>2026-02-18 23:10</td>
-                        <td>₩ 15,000</td>
-                        <td><span class="status-badge status-paid">決済完了</span></td>
+                    
+                    <tr th:if="${recentList == null or recentList.isEmpty()}">
+                        <td colspan="6" style="text-align: center; padding: 40px; color: #888;">
+                            <i class="fa-solid fa-receipt" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                            最新の予約データがありません。
+                        </td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-    </div> <script>
+    </div>
+    
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
             
             // -------------------------------------------------------
-            // 1. 売上推移チャート (Revenue Line Chart)
+            // 1. 売上推移チャート (Revenue Line Chart - Dynamic Fetch)
             // -------------------------------------------------------
             const ctxRevenue = document.getElementById('revenueChart').getContext('2d');
-            
-            // グラデーション作成 (Gradient Effect)
             const gradient = ctxRevenue.createLinearGradient(0, 0, 0, 400);
-            gradient.addColorStop(0, 'rgba(255, 107, 0, 0.5)'); // Top color
-            gradient.addColorStop(1, 'rgba(255, 107, 0, 0.0)'); // Bottom color
+            gradient.addColorStop(0, 'rgba(255, 107, 0, 0.5)'); 
+            gradient.addColorStop(1, 'rgba(255, 107, 0, 0.0)'); 
 
-            new Chart(ctxRevenue, {
-                type: 'line',
-                data: {
-                    // labels: Mon ~ Sun -> 月 ~ 日
-                    labels: ['月', '火', '水', '木', '金', '土', '日'],
-                    datasets: [{
-                        label: '週間売上 (JPY)', // Weekly Revenue
-                        data: [1500000, 2300000, 1800000, 2100000, 3500000, 4800000, 4200000],
-                        borderColor: '#FF6B00',       // Line Color (JSL Orange)
-                        backgroundColor: gradient,    // Fill Color
-                        borderWidth: 3,
-                        pointBackgroundColor: '#fff',
-                        pointBorderColor: '#FF6B00',
-                        pointRadius: 5,
-                        fill: true, // Area Fill
-                        tension: 0.4 // Smooth Curve
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { display: false } // Hide Legend
-                    },
-                    scales: {
-                        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
-                        x: { grid: { display: false } }
-                    }
-                }
-            });
+            fetch('/admin/api/revenue/weekly')
+                .then(response => response.json())
+                .then(data => {
+                    const labels = data.map(item => item.res_date);
+                    const revenues = data.map(item => item.daily_total);
+
+                    new Chart(ctxRevenue, {
+                        type: 'line',
+                        data: {
+                            labels: labels, 
+                            datasets: [{
+                                label: '日別売上 (KRW)', 
+                                data: revenues,        
+                                borderColor: '#FF6B00',
+                                backgroundColor: gradient,
+                                borderWidth: 3,
+                                pointBackgroundColor: '#fff',
+                                pointBorderColor: '#FF6B00',
+                                pointRadius: 5,
+                                fill: true,
+                                tension: 0.4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: { legend: { display: false } },
+                            scales: {
+                                y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+                                x: { grid: { display: false } }
+                            }
+                        }
+                    });
+                })
+                .catch(error => console.error('チャートデータの取得に失敗しました:', error));
 
             // -------------------------------------------------------
-            // 2. ジャンル別シェア
+            // 2. ジャンル別シェア (Genre Share Chart - Static Dummy)
             // -------------------------------------------------------
             const ctxGenre = document.getElementById('genreChart').getContext('2d');
             
             new Chart(ctxGenre, {
                 type: 'doughnut',
                 data: {
-                    // Action, Romance, SF, Drama, Animation -> Japanese
                     labels: ['アクション', 'ロマンス', 'SF', 'ドラマ', 'アニメ'],
                     datasets: [{
-                        data: [45, 20, 15, 10, 10], // Dummy Percentages
+                        data: [45, 20, 15, 10, 10], 
                         backgroundColor: [
-                            '#FF6B00', // Action (Main)
-                            '#FF9F43', // Romance
-                            '#54A0FF', // SF
-                            '#5F27CD', // Drama
-                            '#1DD1A1'  // Animation
+                            '#FF6B00', '#FF9F43', '#54A0FF', '#5F27CD', '#1DD1A1' 
                         ],
                         borderWidth: 0,
                         hoverOffset: 10

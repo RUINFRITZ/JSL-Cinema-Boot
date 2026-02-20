@@ -8,9 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /** **
- * 管理者用 上映スケジュール管理コントローラー
+ * 管理者用上映スケジュール管理コントローラー 
+ * 映画と上映館を紐付け、上映時間を管理します。
+ * URLパスは '/admin/schedule' で始まります。
  ** **/
 @Controller
 @RequestMapping("/admin/schedule")
@@ -23,10 +26,14 @@ public class AdminScheduleController {
 
     /*
      * 上映スケジュール登録画面表示
+     * URL: /admin/schedule/register (GET)
+     *
+     * @param model 画面に渡すデータモデル
+     * @return テンプレートパス (admin/schedule_register)
      */
     @GetMapping("/register")
     public String registerForm(Model model) {
-        // 映画リストとスクリーンリストを両方Modelに詰める
+        log.info("Admin: Schedule Register Form Accessed");
         model.addAttribute("movieList", movieMapper.selectAllMovies());
         model.addAttribute("theaterList", scheduleMapper.selectAllTheaters());
         return "admin/schedule_register";
@@ -34,13 +41,23 @@ public class AdminScheduleController {
 
     /*
      * 上映スケジュール登録処理
+     * URL: /admin/schedule/register (POST)
+     *
+     * @param schedule フォームから送信されたスケジュール情報
+     * @param rttr リダイレクト時のメッセージ伝達用
+     * @return リダイレクト先 (/admin/schedule/register)
      */
     @PostMapping("/register")
-    public String register(Schedule schedule) {
+    public String register(Schedule schedule, RedirectAttributes rttr) {
         log.info("Schedule Register: {}", schedule);
+        
+        // データベースへの登録処理
         scheduleMapper.insertSchedule(schedule);
         
-        // 登録後は管理者ダッシュボード、またはスケジュール一覧(後で作成)へリダイレクト
-        return "redirect:/admin"; 
+        // [追加] 登録成功のフラッシュメッセージを追加 (Success Message)
+        rttr.addFlashAttribute("msg", "上映スケジュールが正常に登録されました。");
+        
+        // 連続登録のために同じページへリダイレクト
+        return "redirect:/admin/schedule/register"; 
     }
 }

@@ -26,18 +26,33 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        /* アクションボタン */
+        /* アクションボタンの基本スタイル */
         .btn-action {
             padding: 6px 12px;
             border-radius: 6px;
             text-decoration: none;
             font-size: 0.85rem;
             font-weight: 600;
-            margin-right: 5px;
-            display: inline-block;
+            display: inline-block; /* margin-right は削除 (Flexboxで制御するため) */
         }
         .btn-edit { background: #e3f2fd; color: #1976d2; }
         .btn-delete { background: #ffebee; color: #c62828; border: none; cursor: pointer; }
+
+        /* [追加] アクションボタンのラッパー (Action Buttons Wrapper) 
+         * ボタンが縦に折り返されるのを防ぎ、横並びに固定します。
+         */
+        .action-buttons {
+            display: flex;
+            gap: 8px;              /* ボタン間の余白 (Gap between buttons) */
+            align-items: center;   /* 縦のセンタリング (Vertical centering) */
+            white-space: nowrap;   /* 自動改行の防止 (Prevent wrapping) */
+        }
+        
+        /* [追加] フォームのデフォルトマージンをリセット */
+        .action-buttons form {
+            margin: 0;
+            display: flex;         /* 内部のボタンもFlexアイテムとして扱う */
+        }
 
         /* 上部ヘッダーエリア */
         .page-header {
@@ -51,15 +66,21 @@
 
     <div class="container">
         
-        <div class="page-header">
+		<div class="page-header">
             <h2 style="margin: 0; font-weight: 800; color: #333;">
                 <i class="fa-solid fa-film" style="color: var(--primary-color); margin-right: 10px;"></i>
                 映画管理
             </h2>
             
-            <a href="/admin/movie/register" class="btn-primary" style="padding: 12px 25px; box-shadow: 0 4px 10px rgba(255,107,0,0.3);">
-                <i class="fa-solid fa-plus"></i> 新規登録
-            </a>
+            <div style="display: flex; gap: 15px;">
+                <a href="/admin/schedule/register" class="btn-primary" style="padding: 12px 25px; background-color: #2e7d32; box-shadow: 0 4px 10px rgba(46,125,50,0.3);">
+                    <i class="fa-solid fa-calendar-plus"></i> 上映日程登録
+                </a>
+                
+                <a href="/admin/movie/register" class="btn-primary" style="padding: 12px 25px; box-shadow: 0 4px 10px rgba(255,107,0,0.3);">
+                    <i class="fa-solid fa-plus"></i> 新規登録
+                </a>
+            </div>
         </div>
 
         <div class="glass-panel" style="padding: 30px;">
@@ -68,11 +89,12 @@
                 <thead>
                     <tr>
                         <th style="width: 5%;">No.</th>
-                        <th style="width: 10%;">Poster</th>
-                        <th style="width: 35%;">Title</th>
-                        <th style="width: 15%;">Release Date</th>
+                        <th style="width: 5%;">Poster</th>
+                        <th style="width: 40%;">Title</th>
+                        <th style="width: 10%;">Release Date</th>
                         <th style="width: 10%;">Running Time</th>
-                        <th style="width: 10%;">Status</th> <th style="width: 15%;">Action</th>
+                        <th style="width: 10%;">Status</th> 
+                        <th style="width: 15%; text-align:center;">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -92,16 +114,18 @@
                             <span class="status-badge status-paid">上映中</span>
                         </td>
                         <td>
-                            <a th:href="@{/admin/movie/detail(mno=${movie.mno})}" class="btn-action btn-edit">
-                                <i class="fa-solid fa-pen"></i> 編集
-                            </a>
-                            
-                            <form action="/admin/movie/delete" method="post" style="display:inline;" onsubmit="return confirm('本当に削除しますか？ (Are you sure?)');">
-                                <input type="hidden" name="mno" th:value="${movie.mno}">
-                                <button type="submit" class="btn-action btn-delete">
-                                    <i class="fa-solid fa-trash"></i> 削除
-                                </button>
-                            </form>
+                            <div class="action-buttons">
+                                <a th:href="@{/admin/movie/detail(mno=${movie.mno})}" class="btn-action btn-edit">
+                                    <i class="fa-solid fa-pen"></i> 編集
+                                </a>
+                                
+                                <form action="/admin/movie/delete" method="post" onsubmit="return confirm('本当に削除しますか？ (Are you sure?)');">
+                                    <input type="hidden" name="mno" th:value="${movie.mno}">
+                                    <button type="submit" class="btn-action btn-delete">
+                                        <i class="fa-solid fa-trash"></i> 削除
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     
@@ -115,8 +139,36 @@
             </table>
 
         </div>
+		
+		<script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener('DOMContentLoaded', function() {
+            // コントローラーから送られた 'msg' を取得 (AdminMovieController で設定した値)
+            const successMessage = /*[[${msg}]]*/ null;
+            
+            if (successMessage) {
+                // SweetAlert2 Toastの設定
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'bottom-end',
+                    showConfirmButton: false,
+                    timer: 2222,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer);
+                        toast.addEventListener('mouseleave', Swal.resumeTimer);
+                    }
+                });
 
-    </div>
+                // トーストを表示 (Fire the toast)
+                Toast.fire({
+                    icon: 'success',
+                    title: successMessage
+                });
+            }
+        });
+        /*]]>*/
+    	</script>
 
 </div>
 </html>

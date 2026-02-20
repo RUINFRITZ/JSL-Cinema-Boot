@@ -74,11 +74,15 @@
                 <th:block sec:authorize="hasRole('ADMIN')">
                     <div class="divider"></div>
                     <span style="font-size: 0.75rem; color: #999; padding-left: 15px; margin-top: 5px;">ADMIN MENU</span>
+                    
                     <a href="/admin" class="menu-item" style="color: #E67E22;">
                         <i class="fa-solid fa-chart-line"></i> ダッシュボード
                     </a>
                     <a href="/admin/movie/list" class="menu-item" style="color: #E67E22;">
                         <i class="fa-solid fa-clapperboard"></i> 映画管理
+                    </a>
+                    <a href="/admin/schedule/register" class="menu-item" style="color: #E67E22;">
+                        <i class="fa-solid fa-calendar-week"></i> 上映日程登録
                     </a>
                 </th:block>
 

@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.List;
 
 /** **
- * 管理者用映画管理コントローラー (Admin Movie Controller)
+ * 管理者用映画管理コントローラー 
  * 映画の登録、修正、削除、一覧表示などの管理機能を提供します。
  * URLパスは '/admin/movie' で始まります。
  ** **/
@@ -37,7 +37,7 @@ public class AdminMovieController {
     public String list(Model model) {
         List<Movie> list = movieService.getMovieList();
         model.addAttribute("list", list);
-        log.info("Admin: Movie List Page Accessed");
+        log.info(" - Admin: Movie List Page Accessed");
         return "admin/movie_list";
     }
 
@@ -49,7 +49,7 @@ public class AdminMovieController {
      */
     @GetMapping("/register")
     public String registerForm() {
-        log.info("Admin: Register Form Accessed");
+        log.info(" - Admin: Register Form Accessed");
         return "admin/movie_register";
     }
 
@@ -66,10 +66,10 @@ public class AdminMovieController {
     public String register(Movie movie, @RequestParam("file") MultipartFile file, RedirectAttributes rttr) {
         try {
             movieService.registerMovie(movie, file);
-            rttr.addFlashAttribute("msg", "Register Success");
+            rttr.addFlashAttribute("msg", " - 映画が正常に登録されました。");
         } catch (IOException e) {
             log.error("File Upload Failed", e);
-            rttr.addFlashAttribute("error", "File Upload Failed");
+            rttr.addFlashAttribute("error", " * ファイルアップロード失敗");
         }
         return "redirect:/admin/movie/list";
     }
@@ -102,10 +102,10 @@ public class AdminMovieController {
     public String modify(Movie movie, @RequestParam(value = "file", required = false) MultipartFile file, RedirectAttributes rttr) {
         try {
             movieService.modifyMovie(movie, file);
-            rttr.addFlashAttribute("msg", "Modify Success");
+            rttr.addFlashAttribute("msg", " - 修正成功");
         } catch (IOException e) {
             log.error("Modify Failed", e);
-            rttr.addFlashAttribute("error", "Modify Failed");
+            rttr.addFlashAttribute("error", " * 修正失敗");
         }
         return "redirect:/admin/movie/list";
     }
@@ -121,7 +121,7 @@ public class AdminMovieController {
     @PostMapping("/delete")
     public String delete(@RequestParam("mno") Long mno, RedirectAttributes rttr) {
         movieService.deleteMovie(mno);
-        rttr.addFlashAttribute("msg", "Delete Success");
+        rttr.addFlashAttribute("msg", " - 削除成功");
         return "redirect:/admin/movie/list";
     }
 }
