@@ -1,240 +1,310 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/default_layout}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/default_layout}">
 
 <div layout:fragment="content">
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <style>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+	<style>
 		/* [追加] このページ専用のコンテナ上書き設定 (Page-Specific Override) */
-        .container {
-            padding-top: 42px !important;
-            max-width: 1400px !important; 
-        }    
-    
-        /* ダッシュボードグリッドレイアウト */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-bottom: 30px;
-        }
+		.container {
+			padding-top: 42px !important;
+			max-width: 1400px !important;
+		}
 
-        /* 統計カード (KPI Card) */
-        .stat-card {
-            padding: 25px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: transform 0.3s ease;
-        }
-        .stat-card:hover { transform: translateY(-5px); }
-        
-        .stat-icon {
-            width: 60px; height: 60px;
-            background: rgba(255, 107, 0, 0.1);
-            color: var(--primary-color);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem;
-        }
-        .stat-info h3 { margin: 0; font-size: 2rem; font-weight: 800; color: #333; }
-        .stat-info p { margin: 5px 0 0; color: #666; font-size: 0.9rem; font-weight: 600; }
+		/* ダッシュボードグリッドレイアウト */
+		.dashboard-grid {
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			gap: 20px;
+			margin-bottom: 30px;
+		}
 
-        /* チャートエリア */
-        .chart-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        .chart-panel { padding: 30px; min-height: 400px; }
-        .chart-header { margin-bottom: 20px; font-size: 1.2rem; font-weight: 700; color: #444; border-left: 5px solid var(--primary-color); padding-left: 15px; }
+		/* 統計カード (KPI Card) */
+		.stat-card {
+			padding: 25px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			transition: transform 0.3s ease;
+		}
 
-        /* 最近のアクティビティテーブル */
-        .table-panel { padding: 30px; }
-        .custom-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .custom-table th { text-align: left; padding: 15px; border-bottom: 2px solid #eee; color: #555; }
-        .custom-table td { padding: 15px; border-bottom: 1px solid #f0f0f0; color: #666; }
-        .status-badge {
-            padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;
-        }
-        .status-paid { background: #e8f5e9; color: #2e7d32; }   /* Green */
-        .status-cancel { background: #ffebee; color: #c62828; } /* Red */
-    </style>
+		.stat-card:hover {
+			transform: translateY(-5px);
+		}
 
-    <div class="container">
-        
-        <h2 style="margin-bottom: 30px; font-weight: 800; color: #333;">
-            <i class="fa-solid fa-gauge-high" style="color: var(--primary-color); margin-right: 10px;"></i>
-            ダッシュボード概要 : Overview
-        </h2>
+		.stat-icon {
+			width: 60px;
+			height: 60px;
+			background: rgba(255, 107, 0, 0.1);
+			color: var(--primary-color);
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 1.5rem;
+		}
 
-        <div class="dashboard-grid">
-            <div class="glass-panel stat-card">
-                <div class="stat-info">
-                    <h3 th:text="${todayRevenue != null ? #numbers.formatInteger(todayRevenue, 1, 'COMMA') : '0'}">12.5M</h3>
-                    <p>本日の売上 (KRW)</p>
-                </div>
-                <div class="stat-icon"><i class="fa-solid fa-won-sign"></i></div>
-            </div>
-            
-            <div class="glass-panel stat-card">
-                <div class="stat-info">
-                    <h3 th:text="${reservationRate != null ? reservationRate : '0'} + '%'">78%</h3>
-                    <p>リアルタイム予約率</p> 
-                </div>
-                <div class="stat-icon"><i class="fa-solid fa-ticket"></i></div>
-            </div>
-            
-            <div class="glass-panel stat-card">
-                <div class="stat-info">
-                    <h3 th:text="${totalMembers != null ? #numbers.formatInteger(totalMembers, 1, 'COMMA') : '0'}">1,024</h3>
-                    <p>総会員数</p> 
-                </div>
-                <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
-            </div>
-            
-            <div class="glass-panel stat-card" onclick="location.href='/admin/movie/list'" style="cursor: pointer;">
-                <div class="stat-info">
-                    <h3 th:text="${activeMovies != null ? activeMovies : '0'}">8</h3>
-                    <p>現在上映中</p> 
-                </div>
-                <div class="stat-icon"><i class="fa-solid fa-film"></i></div>
-            </div>
-        </div>
+		.stat-info h3 {
+			margin: 0;
+			font-size: 2rem;
+			font-weight: 800;
+			color: #333;
+		}
 
-        <div class="chart-grid">
-            <div class="glass-panel chart-panel">
-                <div class="chart-header">週間売上推移</div>
-                <canvas id="revenueChart"></canvas>
-            </div>
-            <div class="glass-panel chart-panel">
-                <div class="chart-header">ジャンル別シェア</div>
-                <div style="height: 300px; display: flex; justify-content: center;">
-                    <canvas id="genreChart"></canvas>
-                </div>
-            </div>
-        </div>
+		.stat-info p {
+			margin: 5px 0 0;
+			color: #666;
+			font-size: 0.9rem;
+			font-weight: 600;
+		}
 
-        <div class="glass-panel table-panel">
-            <div class="chart-header" style="display: flex; justify-content: space-between;">
-                <span>最新の予約状況</span>
-                <a href="#" style="font-size: 0.9rem; color: var(--primary-color); text-decoration: none;">一覧を見る ></a>
-            </div>
-            
-            <table class="custom-table">
-                <thead>
-                    <tr>
-                        <th>予約番号</th> 
-                        <th>会員ID</th>   
-                        <th>作品名</th>   
-                        <th>決済日時</th> 
-                        <th>決済金額</th> 
-                        <th>決済状態</th> 
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="res : ${recentList}">
-                        <td th:text="'#' + ${res.rno}">#1023</td>
-                        <td th:text="${res.userid}">user01</td>
-                        <td th:text="${res.movie_title}">GLADIATOR 2</td>
-                        <td th:text="${#dates.format(res.rdate, 'yyyy-MM-dd HH:mm')}">2026-02-19 10:30</td>
-                        <td th:text="'₩ ' + ${#numbers.formatInteger(res.price, 1, 'COMMA')}">₩ 15,000</td>
-                        <td>
-                            <span th:if="${res.status == 'PAID'}" class="status-badge status-paid">決済完了</span>
-                            <span th:if="${res.status == 'CANCEL'}" class="status-badge status-cancel">取消済み</span>
-                        </td>
-                    </tr>
-                    
-                    <tr th:if="${recentList == null or recentList.isEmpty()}">
-                        <td colspan="6" style="text-align: center; padding: 40px; color: #888;">
-                            <i class="fa-solid fa-receipt" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
-                            最新の予約データがありません。
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+		/* チャートエリア */
+		.chart-grid {
+			display: grid;
+			grid-template-columns: 2fr 1fr;
+			gap: 20px;
+			margin-bottom: 30px;
+		}
 
-    </div>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            
-            // -------------------------------------------------------
-            // 1. 売上推移チャート (Revenue Line Chart - Dynamic Fetch)
-            // -------------------------------------------------------
-            const ctxRevenue = document.getElementById('revenueChart').getContext('2d');
-            const gradient = ctxRevenue.createLinearGradient(0, 0, 0, 400);
-            gradient.addColorStop(0, 'rgba(255, 107, 0, 0.5)'); 
-            gradient.addColorStop(1, 'rgba(255, 107, 0, 0.0)'); 
+		.chart-panel {
+			padding: 30px;
+			min-height: 400px;
+		}
 
-            fetch('/admin/api/revenue/weekly')
-                .then(response => response.json())
-                .then(data => {
-                    const labels = data.map(item => item.res_date);
-                    const revenues = data.map(item => item.daily_total);
+		.chart-header {
+			margin-bottom: 20px;
+			font-size: 1.2rem;
+			font-weight: 700;
+			color: #444;
+			border-left: 5px solid var(--primary-color);
+			padding-left: 15px;
+		}
 
-                    new Chart(ctxRevenue, {
-                        type: 'line',
-                        data: {
-                            labels: labels, 
-                            datasets: [{
-                                label: '日別売上 (KRW)', 
-                                data: revenues,        
-                                borderColor: '#FF6B00',
-                                backgroundColor: gradient,
-                                borderWidth: 3,
-                                pointBackgroundColor: '#fff',
-                                pointBorderColor: '#FF6B00',
-                                pointRadius: 5,
-                                fill: true,
-                                tension: 0.4
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            plugins: { legend: { display: false } },
-                            scales: {
-                                y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
-                                x: { grid: { display: false } }
-                            }
-                        }
-                    });
-                })
-                .catch(error => console.error('チャートデータの取得に失敗しました:', error));
+		/* 最近のアクティビティテーブル */
+		.table-panel {
+			padding: 30px;
+		}
 
-            // -------------------------------------------------------
-            // 2. ジャンル別シェア (Genre Share Chart - Static Dummy)
-            // -------------------------------------------------------
-            const ctxGenre = document.getElementById('genreChart').getContext('2d');
-            
-            new Chart(ctxGenre, {
-                type: 'doughnut',
-                data: {
-                    labels: ['アクション', 'ロマンス', 'SF', 'ドラマ', 'アニメ'],
-                    datasets: [{
-                        data: [45, 20, 15, 10, 10], 
-                        backgroundColor: [
-                            '#FF6B00', '#FF9F43', '#54A0FF', '#5F27CD', '#1DD1A1' 
-                        ],
-                        borderWidth: 0,
-                        hoverOffset: 10
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom', labels: { padding: 20 } }
-                    }
-                }
-            });
-        });
-    </script>
+		.custom-table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-top: 10px;
+		}
+
+		.custom-table th {
+			text-align: left;
+			padding: 15px;
+			border-bottom: 2px solid #eee;
+			color: #555;
+		}
+
+		.custom-table td {
+			padding: 15px;
+			border-bottom: 1px solid #f0f0f0;
+			color: #666;
+		}
+
+		.status-badge {
+			padding: 5px 12px;
+			border-radius: 20px;
+			font-size: 0.8rem;
+			font-weight: bold;
+		}
+
+		.status-paid {
+			background: #e8f5e9;
+			color: #2e7d32;
+		}
+
+		/* Green */
+		.status-cancel {
+			background: #ffebee;
+			color: #c62828;
+		}
+
+		/* Red */
+	</style>
+
+	<div class="container">
+
+		<h2 style="margin-bottom: 30px; font-weight: 800; color: #333; margin-top: 22px;">
+			<i class="fa-solid fa-gauge-high" style="color: var(--primary-color); margin-right: 10px;"></i>
+			ダッシュボード概要 : Overview
+		</h2>
+
+		<div class="dashboard-grid">
+			<div class="glass-panel stat-card">
+				<div class="stat-info">
+					<h3 th:text="${todayRevenue != null ? #numbers.formatInteger(todayRevenue, 1, 'COMMA') : '0'}">22.2M
+					</h3>
+					<p>本日の売上 (KRW)</p>
+				</div>
+				<div class="stat-icon"><i class="fa-solid fa-won-sign"></i></div>
+			</div>
+
+			<div class="glass-panel stat-card">
+				<div class="stat-info">
+					<h3 th:text="${reservationRate != null ? reservationRate : '0'} + '%'">22%</h3>
+					<p>リアルタイム予約率</p>
+				</div>
+				<div class="stat-icon"><i class="fa-solid fa-ticket"></i></div>
+			</div>
+
+			<div class="glass-panel stat-card">
+				<div class="stat-info">
+					<h3 th:text="${totalMembers != null ? #numbers.formatInteger(totalMembers, 1, 'COMMA') : '0'}">2,048
+					</h3>
+					<p>総会員数</p>
+				</div>
+				<div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+			</div>
+
+			<div class="glass-panel stat-card" onclick="location.href='/admin/movie/list'" style="cursor: pointer;">
+				<div class="stat-info">
+					<h3 th:text="${activeMovies != null ? activeMovies : '0'}">8</h3>
+					<p>現在上映中</p>
+				</div>
+				<div class="stat-icon"><i class="fa-solid fa-film"></i></div>
+			</div>
+		</div>
+
+		<div class="chart-grid">
+			<div class="glass-panel chart-panel">
+				<div class="chart-header">週間売上推移</div>
+				<canvas id="revenueChart"></canvas>
+			</div>
+			<div class="glass-panel chart-panel">
+				<div class="chart-header">ジャンル別シェア</div>
+				<div style="height: 362px; display: flex; justify-content: center;">
+					<canvas id="genreChart"></canvas>
+				</div>
+			</div>
+		</div>
+
+		<div class="glass-panel table-panel">
+			<div class="chart-header" style="display: flex; justify-content: space-between;">
+				<span>最新の予約状況</span>
+				<a href="/admin/reservation/list" style="font-size: 1.0rem; color: var(--primary-color); text-decoration: none;">一覧を見る ></a>
+			</div>
+
+			<table class="custom-table">
+				<thead>
+					<tr>
+						<th>予約番号</th>
+						<th>会員ID</th>
+						<th>作品名</th>
+						<th>決済日時</th>
+						<th>決済金額</th>
+						<th>決済状態</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="res : ${recentList}">
+						<td th:text="'#' + ${res.rno}"></td>
+						<td th:text="${res.userid}"></td>
+						<td th:text="${res.movie_title}"></td>
+
+						<td th:text="${res.rdate != null ? #temporals.format(res.rdate, 'yyyy-MM-dd HH:mm') : '-'}">
+						</td>
+
+						<td th:text="${res.price != null ? '₩ ' + #numbers.formatInteger(res.price, 1, 'COMMA') : '-'}">
+						</td>
+						<td>
+							<span th:if="${res.status == 'PAID'}" class="status-badge status-paid">決済完了</span>
+							<span th:if="${res.status == 'CANCEL'}" class="status-badge status-cancel">取消済み</span>
+							<!--		                        </td>-->
+					</tr>
+
+					<tr th:if="${recentList == null or recentList.isEmpty()}">
+						<td colspan="6" style="text-align: center; padding: 40px; color: #888;">
+							<i class="fa-solid fa-receipt"
+								style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+							最新の予約データがありません。
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+	</div>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+
+			// -------------------------------------------------------
+			// 1. 売上推移チャート (Revenue Line Chart - Dynamic Fetch)
+			// -------------------------------------------------------
+			const ctxRevenue = document.getElementById('revenueChart').getContext('2d');
+			const gradient = ctxRevenue.createLinearGradient(0, 0, 0, 400);
+			gradient.addColorStop(0, 'rgba(255, 107, 0, 0.5)');
+			gradient.addColorStop(1, 'rgba(255, 107, 0, 0.0)');
+
+			fetch('/admin/api/revenue/weekly')
+				.then(response => response.json())
+				.then(data => {
+					const labels = data.map(item => item.res_date);
+					const revenues = data.map(item => item.daily_total);
+
+					new Chart(ctxRevenue, {
+						type: 'line',
+						data: {
+							labels: labels,
+							datasets: [{
+								label: '日別売上 (KRW)',
+								data: revenues,
+								borderColor: '#FF6B00',
+								backgroundColor: gradient,
+								borderWidth: 3,
+								pointBackgroundColor: '#fff',
+								pointBorderColor: '#FF6B00',
+								pointRadius: 5,
+								fill: true,
+								tension: 0.4
+							}]
+						},
+						options: {
+							responsive: true,
+							plugins: {legend: {display: false}},
+							scales: {
+								y: {beginAtZero: true, grid: {color: 'rgba(0,0,0,0.05)'}},
+								x: {grid: {display: false}}
+							}
+						}
+					});
+				})
+				.catch(error => console.error('チャートデータの取得に失敗しました:', error));
+
+			// -------------------------------------------------------
+			// 2. ジャンル別シェア (Genre Share Chart - Static Dummy)
+			// -------------------------------------------------------
+			const ctxGenre = document.getElementById('genreChart').getContext('2d');
+
+			new Chart(ctxGenre, {
+				type: 'doughnut',
+				data: {
+					labels: ['アクション', 'ロマンス', 'SF', 'ドラマ', 'アニメ'],
+					datasets: [{
+						data: [45, 20, 15, 10, 10],
+						backgroundColor: [
+							'#FF6B00', '#FF9F43', '#54A0FF', '#5F27CD', '#1DD1A1'
+						],
+						borderWidth: 0,
+						hoverOffset: 10
+					}]
+				},
+				options: {
+					responsive: true,
+					maintainAspectRatio: false,
+					plugins: {
+						legend: {position: 'bottom', labels: {padding: 20}}
+					}
+				}
+			});
+		});
+	</script>
 </div>
+
 </html>

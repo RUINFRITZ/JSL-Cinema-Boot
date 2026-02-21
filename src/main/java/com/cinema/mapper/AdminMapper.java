@@ -57,4 +57,12 @@ public interface AdminMapper {
      * @return 抽出された日別売上データのリスト (List of Map<String, Object>)
      */
     List<Map<String, Object>> selectWeeklyRevenue();
+    
+    /*
+     * すべての予約リストを取得
+     * 管理者向けに全体の決済履歴および予約状況を照会します。
+     *
+     * @return 全予約データのリスト (List of Map<String, Object>)
+     */
+    List<Map<String, Object>> getAllReservations();
 }

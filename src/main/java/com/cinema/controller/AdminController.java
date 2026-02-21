@@ -50,4 +50,25 @@ public class AdminController {
 
         return "admin/home";
     }
+    
+    /*
+     * 予約一覧（全体）画面表示
+     * URL: /admin/reservation/list
+     *
+     * @param model ビューに渡すデータを格納するModelオブジェクト
+     * @return テンプレートパス (admin/reservation_list)
+     */
+    @GetMapping("/reservation/list")
+    public String reservationList(Model model) {
+        log.info(" - Admin: Reservation List Page Accessed");
+
+        try {
+            // 全予約データを取得し、モデルに格納します
+            model.addAttribute("reservationList", adminMapper.getAllReservations());
+        } catch (Exception e) {
+            log.error(" * 予約一覧データの取得中にエラーが発生しました。", e);
+        }
+
+        return "admin/reservation_list"; // 新規作成するHTMLファイル名
+    }
 }

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<div layout:fragment="content">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* ページ固有のコンテナ設定 */
+        .container {
+            padding-top: 42px !important;
+            max-width: 1400px !important; 
+        }    
+
+        /* 共通のパネルとテーブルのスタイル */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .chart-header {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #444;
+            border-left: 5px solid var(--primary-color);
+            padding-left: 15px;
+        }
+
+        .custom-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .custom-table th { text-align: left; padding: 15px; border-bottom: 2px solid #eee; color: #555; }
+        .custom-table td { padding: 15px; border-bottom: 1px solid #f0f0f0; color: #666; }
+        
+        .status-badge {
+            padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;
+        }
+        .status-paid { background: #e8f5e9; color: #2e7d32; }   
+        .status-cancel { background: #ffebee; color: #c62828; } 
+
+        /* 上部戻るボタンエリア用 */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .btn-back {
+            padding: 8px 16px;
+            background: #f5f5f5;
+            color: #333;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .btn-back:hover { background: #e0e0e0; }
+    </style>
+
+    <div class="container">
+        
+        <div class="page-header" style="margin-top: 22px;">
+            <h2 style="font-weight: 800; color: #333; margin: 0;">
+                <i class="fa-solid fa-list-check" style="color: var(--primary-color); margin-right: 10px;"></i>
+                予約管理 : Reservation List
+            </h2>
+            <a th:href="@{/admin/home}" class="btn-back">
+                <i class="fa-solid fa-arrow-left"></i> ダッシュボードに戻る
+            </a>
+        </div>
+
+        <div class="glass-panel">
+            <div class="chart-header">
+                <span>すべての予約履歴</span>
+            </div>
+            
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>予約番号</th> 
+                        <th>会員ID</th>   
+                        <th>作品名</th>   
+                        <th>決済日時</th> 
+                        <th>決済金額</th> 
+                        <th>決済状態</th> 
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="res : ${reservationList}">
+                        <td th:text="'#' + ${res.rno}"></td>
+                        <td th:text="${res.userid}"></td>
+                        <td th:text="${res.movie_title}"></td>
+                        <td th:text="${res.rdate != null ? #temporals.format(res.rdate, 'yyyy-MM-dd HH:mm') : '-'}"></td>
+                        <td th:text="${res.price != null ? '₩ ' + #numbers.formatInteger(res.price, 1, 'COMMA') : '-'}"></td>
+                        <td>
+                            <span th:if="${res.status == 'PAID'}" class="status-badge status-paid">決済完了</span>
+                            <span th:if="${res.status == 'CANCEL'}" class="status-badge status-cancel">取消済み</span>
+                        </td>
+                    </tr>
+                    
+                    <tr th:if="${reservationList == null or reservationList.isEmpty()}">
+                        <td colspan="6" style="text-align: center; padding: 40px; color: #888;">
+                            <i class="fa-solid fa-folder-open" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                            登録されている予約データがありません。
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+</html>
