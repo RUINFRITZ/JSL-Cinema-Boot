@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cinema.mapper.ReservationMapper">
+
+    <insert id="insertReservation">
+        INSERT INTO reservation (
+            sno, 
+            userid, 
+            seat_info, 
+            price, 
+            status, 
+            rdate
+        ) VALUES (
+            #{sno}, 
+            #{userid}, 
+            #{seatInfo}, 
+            #{price}, 
+            'PAID', 
+            NOW()
+        )
+    </insert>
+
+    <select id="selectMyTickets" resultType="java.util.Map">
+        SELECT 
+            r.rno, 
+            r.seat_info, 
+            r.price, 
+            r.status,
+            s.sdate,
+            m.title, 
+            m.poster,
+            t.tname
+        FROM reservation r
+        JOIN schedule s ON r.sno = s.sno
+        JOIN movie m ON s.mno = m.mno
+        JOIN theater t ON s.tno = t.tno
+        WHERE r.userid = #{userid}
+        ORDER BY s.sdate DESC
+    </select>
+
+    <select id="checkExistingReservationForUpdate" resultType="int">
+        SELECT COUNT(*)
+        FROM reservation
+        WHERE sno = #{sno}
+          AND (
+            <foreach item="seat" collection="seatList" separator=" OR ">
+                seat_info LIKE CONCAT('%', #{seat}, '%')
+            </foreach>
+          )
+        FOR UPDATE
+    </select>
+
+</mapper>

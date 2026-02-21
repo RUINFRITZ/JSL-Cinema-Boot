@@ -1,8 +1,11 @@
 package com.cinema.mapper;
 
-import com.cinema.domain.Movie;
-import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import com.cinema.domain.Movie;
 
 /** **
  * 映画マッパーインターフェース (Movie Mapper Interface)
@@ -19,16 +22,10 @@ public interface MovieMapper {
 
     /*
      * 全ての映画リストを取得します。
-     * @return 映画リスト
+     * メイン画面の横スクロールUIなどで使用されます。
+     * @return 映画リスト (List of Movie)
      */
     List<Movie> selectAllMovies();
-
-    /*
-     * 映画番号(mno)で詳細情報を取得します。
-     * @param mno 映画番号
-     * @return 映画情報
-     */
-    Movie selectMovieById(Long mno);
 
     /*
      * 映画情報を更新します。
@@ -41,4 +38,11 @@ public interface MovieMapper {
      * @param mno 削除する映画番号
      */
     void deleteMovie(Long mno);
+    
+    /*
+     * 映画番号（mno）を基に特定の映画詳細情報を取得します。
+     * @param mno 映画番号
+     * @return 映画エンティティ
+     */
+    Movie selectMovieDetail(@Param("mno") Long mno);
 }

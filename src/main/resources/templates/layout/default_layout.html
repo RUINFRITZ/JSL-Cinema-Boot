@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko"
+<html lang="ja"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
@@ -31,7 +31,7 @@
         <div class="search-container">
             <form th:action="@{/movie/list}" method="get" class="search-form">
                 <input type="text" name="keyword" class="search-input" 
-                       placeholder="映画、監督、俳優を検索..." 
+                       placeholder="映画 検索 ..." 
                        th:value="${param.keyword}">
                 <button type="submit" class="btn-search">
                     <i class="fa-solid fa-search"></i>
@@ -42,7 +42,7 @@
         <div class="nav-right">
             
             <th:block sec:authorize="isAnonymous()">
-                <a href="/login" class="btn-header-login">LOGIN</a>
+                <a th:href="@{/member/login}" class="btn-header-login">LOGIN</a>
             </th:block>
 
             <th:block sec:authorize="isAuthenticated()">

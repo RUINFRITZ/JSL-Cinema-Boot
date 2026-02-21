@@ -1,41 +1,40 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.cinema.mapper.MovieMapper">
 
+    <select id="selectMovieDetail" resultType="com.cinema.domain.Movie">
+        SELECT 
+            mno, 
+            title, 
+            content, 
+            poster, 
+            runtime, 
+            opendate, 
+            catchphrase,
+            regdate
+        FROM movie
+        WHERE mno = #{mno}
+    </select>
+
     <insert id="insertMovie" parameterType="com.cinema.domain.Movie" useGeneratedKeys="true" keyProperty="mno">
-        INSERT INTO movie (
-            title, content, poster, runtime, 
-            opendate, catchphrase
-        ) VALUES (
-            #{title}, #{content}, #{poster}, #{runtime}, 
-            #{opendate}, #{catchphrase}
-        )
+        INSERT INTO movie (title, content, poster, runtime, opendate, catchphrase)
+        VALUES (#{title}, #{content}, #{poster}, #{runtime}, #{opendate}, #{catchphrase})
     </insert>
 
     <select id="selectAllMovies" resultType="com.cinema.domain.Movie">
-        SELECT * FROM movie ORDER BY mno DESC
-    </select>
-
-    <select id="selectMovieById" parameterType="long" resultType="com.cinema.domain.Movie">
-        SELECT * FROM movie WHERE mno = #{mno}
+        SELECT * FROM movie ORDER BY opendate DESC
     </select>
 
     <update id="updateMovie" parameterType="com.cinema.domain.Movie">
         UPDATE movie
-        SET 
-            title = #{title},
-            content = #{content},
-            runtime = #{runtime},
-            opendate = #{opendate},
-            catchphrase = #{catchphrase}
-            <if test="poster != null">
-                , poster = #{poster}
-            </if>
+        SET title = #{title}, content = #{content}, runtime = #{runtime}, 
+            opendate = #{opendate}, catchphrase = #{catchphrase}
+            <if test="poster != null">, poster = #{poster}</if>
         WHERE mno = #{mno}
     </update>
 
-    <delete id="deleteMovie" parameterType="long">
+    <delete id="deleteMovie">
         DELETE FROM movie WHERE mno = #{mno}
     </delete>
 

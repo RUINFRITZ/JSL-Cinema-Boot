@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cinema.mapper.ReviewMapper">
+
+    <select id="selectReviewsByMno" resultType="map">
+        SELECT 
+            rev_no, 
+            userid, 
+            star, 
+            comments, 
+            DATE_FORMAT(regdate, '%Y-%m-%d %H:%i') as regdate
+        FROM review
+        WHERE mno = #{mno}
+        ORDER BY regdate DESC
+    </select>
+
+	<insert id="insertReview" parameterType="com.cinema.domain.Review">
+        INSERT INTO review (mno, userid, star, comments)
+        VALUES (#{mno}, #{userid}, #{star}, #{comments})
+    </insert>
+
+	<delete id="deleteReview">
+	    DELETE FROM review 
+	    WHERE rev_no = #{rev_no} AND userid = #{userid}
+	</delete>
+	
+	<update id="updateReview">
+        UPDATE review 
+        SET star = #{star}, 
+            comments = #{comments}, 
+            regdate = NOW() 
+        WHERE rev_no = #{revNo} AND userid = #{userid}
+    </update>
+
+</mapper>

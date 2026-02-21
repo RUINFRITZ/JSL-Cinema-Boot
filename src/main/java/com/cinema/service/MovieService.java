@@ -45,7 +45,7 @@ public class MovieService {
      * @return 映画情報
      */
     public Movie getMovieDetail(Long mno) {
-        return movieMapper.selectMovieById(mno);
+        return movieMapper.selectMovieDetail(mno);
     }
 
     /*
@@ -69,7 +69,7 @@ public class MovieService {
 
         // DBに映画情報を保存
         movieMapper.insertMovie(movie);
-        log.info("New Movie Registered: {}", movie.getTitle());
+        log.info(" - New Movie Registered: {}", movie.getTitle());
     }
 
     /*
@@ -85,7 +85,7 @@ public class MovieService {
         // 1. 新しいファイルがあるか確認
         if (file != null && !file.isEmpty()) {
             // 既存の映画情報を取得 (古いファイル名を知るため)
-            Movie oldMovie = movieMapper.selectMovieById(movie.getMno());
+            Movie oldMovie = movieMapper.selectMovieDetail(movie.getMno());
             
             // 既存ファイルがあれば削除 (default.jpg は削除しない)
             if (oldMovie.getPoster() != null && !"default.jpg".equals(oldMovie.getPoster())) {
@@ -99,7 +99,7 @@ public class MovieService {
 
         // 2. DB更新
         movieMapper.updateMovie(movie);
-        log.info("Movie Modified: {}", movie.getMno());
+        log.info(" - Movie Modified: {}", movie.getMno());
     }
 
     /*
@@ -111,7 +111,7 @@ public class MovieService {
     @Transactional
     public void deleteMovie(Long mno) {
         // 削除前にファイル情報を取得
-        Movie movie = movieMapper.selectMovieById(mno);
+        Movie movie = movieMapper.selectMovieDetail(mno);
 
         // ファイルが存在すれば物理削除 (default.jpg は削除しない)
         if (movie != null && movie.getPoster() != null && !"default.jpg".equals(movie.getPoster())) {
@@ -120,7 +120,7 @@ public class MovieService {
 
         // DBから削除
         movieMapper.deleteMovie(mno);
-        log.info("Movie Deleted: {}", mno);
+        log.info(" - Movie Deleted: {}", mno);
     }
 
     /*
@@ -159,9 +159,11 @@ public class MovieService {
     private void deleteFile(String fileName) {
         File file = new File(uploadPath, fileName);
         if (file.exists()) {
-            if(file.delete()) {
-                log.info("File deleted successfully: {}", fileName);
-                log.warn("Failed to delete file: {}", fileName);
+        	if (file.delete()) {
+                log.info(" - File deleted successfully: {}", fileName);
+            } else {
+                // 削除に失敗した場合のみ警告ログを出力するように修正
+                log.warn(" * Failed to delete file: {}", fileName);
             }
         }
     }

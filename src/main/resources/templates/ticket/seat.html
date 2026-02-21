@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<div layout:fragment="content">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        .container {
+            padding-top: 52px !important;
+            max-width: 2200px !important; 
+        }
+
+        /* 画面全体のレイアウト (左: 映画情報, 右: 座席マップ) */
+        .seat-layout {
+            display: flex;
+            gap: 22px;
+            align-items: flex-start;
+			justify-content: center;
+        }
+
+		/* 左側: 映画サマリー情報 */
+        .info-panel {
+            /* [修正] 幅を広げて情報を見やすくし、Flexboxによる縮小を防止します */
+            width: 350px;          
+            flex-shrink: 0;        /* [重要] 画面幅が狭くなっても絶対に縮小させない設定 */
+            
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            position: sticky;
+            top: 100px; /* スクロールしても追従させる */
+        }
+        
+        .info-poster {
+            width: 100%;
+            height: auto;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* 右側: 座席マップエリア */
+        .seat-panel {
+            /* flex-grow: 1; */
+			
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* スクリーンの演出 */
+        .screen-curve {
+            width: 80%;
+            height: 60px;
+            background: linear-gradient(to bottom, rgba(200,200,200,0.5), transparent);
+            border-top: 5px solid #ccc;
+            border-radius: 50% / 100% 100% 0 0; /* 緩やかなカーブ */
+            margin: 0 0 40px 64px;
+            position: relative;
+            box-shadow: 0 15px 30px rgba(255, 255, 255, 0.8) inset;
+            text-align: center;
+        }
+        .screen-curve span {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #888;
+            font-weight: 800;
+            letter-spacing: 10px;
+        }
+
+        /* 座席グリッドのコンテナ */
+        .seat-map {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .seat-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* 行のアルファベットラベル */
+        .row-label {
+            width: 30px;
+            font-weight: 800;
+            color: #888;
+            text-align: right;
+            margin-right: 15px;
+        }
+
+        /* 個別の座席デザイン */
+        .seat {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #ddd;
+            border-radius: 8px 8px 15px 15px; /* 椅子っぽい形に */
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: #aaa;
+            font-weight: bold;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+        }
+
+        .seat:hover:not(.booked) {
+            border-color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(255, 107, 0, 0.15);
+        }
+
+        /* 選択中の座席 */
+        .seat.selected {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(255, 107, 0, 0.4);
+        }
+
+        /* 予約済みの座席 */
+        .seat.booked {
+            background: #e0e0e0;
+            border-color: #ccc;
+            color: #999;
+            cursor: not-allowed;
+            text-decoration: line-through;
+        }
+
+        /* 座席ステータスの凡例 (Legend) */
+        .seat-legend {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            font-weight: 600;
+            color: #666;
+        }
+        .legend-item { display: flex; align-items: center; gap: 8px; }
+        .legend-box { width: 20px; height: 20px; border-radius: 4px; }
+
+        /* 決済金額エリア */
+        .price-area {
+            margin-top: 10px;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+        
+        .btn-checkout {
+            width: 100%;
+            background: var(--primary-color);
+            color: #fff;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            opacity: 0.5;
+            pointer-events: none; /* 初期状態は非活性 */
+        }
+        .btn-checkout.active {
+            opacity: 1;
+            pointer-events: auto;
+            box-shadow: 0 4px 15px rgba(255, 107, 0, 0.4);
+        }
+        .btn-checkout.active:hover { background: var(--primary-hover); transform: translateY(-2px); }
+		
+		/* [追加] SweetAlert2 カスタムアイコンの枠線を消す設定 */
+	    .swal-custom-icon {
+	        border: none !important;
+	        font-size: 1.6rem !important;
+	        margin-bottom: 0 !important;
+	    }
+    </style>
+
+    <div class="container">
+        
+        <div class="seat-layout">
+            
+            <div class="seat-panel">
+                
+                <div class="screen-curve" >
+                    <span>SCREEN</span>
+                </div>
+
+                <div class="seat-legend">
+                    <div class="legend-item"><div class="legend-box" style="background:#fff; border:2px solid #ddd;"></div> 空席</div>
+                    <div class="legend-item"><div class="legend-box" style="background:var(--primary-color);"></div> 選択中</div>
+                    <div class="legend-item"><div class="legend-box" style="background:#e0e0e0;"></div> 予約済</div>
+                </div>
+
+                <div class="seat-map" id="seatMapContainer"></div>
+
+            </div>
+			
+			<div class="info-panel">
+			    <img th:src="@{'/upload/' + ${detail.poster}}" alt="Poster" class="info-poster" onerror="this.src='/images/default_poster.jpg'">
+			    
+			    <h3 style="font-size: 1.5rem; font-weight: 900; margin: 0 0 15px 0;" th:text="${detail.title}">映画タイトル</h3>
+			    
+				<div style="margin-bottom: 10px; color: #555; font-size: 1.1rem;">
+			        <i class="fa-regular fa-calendar" style="width: 20px; color: var(--primary-color);"></i>
+			        <span th:text="${#temporals.format(detail.sdate, 'yyyy-MM-dd')}">2026-02-22</span>
+			    </div>
+			    
+			    <div style="margin-bottom: 10px; color: #555; font-size: 1.1rem;">
+			        <i class="fa-regular fa-clock" style="width: 20px; color: var(--primary-color);"></i>
+			        <span th:text="${#temporals.format(detail.sdate, 'HH:mm')}">14:30</span> 
+			        <span style="font-size:0.9rem; color:#888;">(~<span th:text="${detail.runtime}">222</span>分)</span>
+			    </div>
+			    
+			    <div style="margin-bottom: 14px; color: #555; font-size: 1.1rem;">
+			        <i class="fa-solid fa-location-dot" style="width: 20px; color: var(--primary-color);"></i>
+			        <strong th:text="${detail.tname}">2館</strong>
+			    </div>
+
+			    <div class="price-area">
+			        <div style="display:flex; justify-content:space-between; margin-bottom: 10px;">
+			            <span>選択座席 :</span>
+			            <strong id="selectedSeatsDisplay" style="color: var(--primary-color);">-</strong>
+			        </div>
+			        <div style="display:flex; justify-content:space-between; margin-bottom: 20px; font-size: 1.3rem;">
+			            <span>決済ポイント :</span>
+			            <strong><span id="totalPriceDisplay">0</span> P</strong>
+			        </div>
+			        
+			        <form id="checkoutForm" action="/ticket/process" method="post">
+			            <input type="hidden" name="sno" th:value="${detail.sno}">
+			            <input type="hidden" name="seatInfo" id="hiddenSeatInfo" value="">
+			            <input type="hidden" name="price" id="hiddenPriceInfo" value="0">
+			            
+			            <button type="button" class="btn-checkout" id="btnCheckout">決済に進む <i class="fa-solid fa-credit-card"></i></button>
+			        </form>
+			    </div>
+			</div>
+			
+        </div>
+
+    </div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const maxRow = /*[[${detail.trow}]]*/ 5;
+        const maxCol = /*[[${detail.tcol}]]*/ 10;
+        
+        // 予約済み座席の配列を文字列結合状態から配列へ変換する処理が必要な場合がありますが、
+        // 今回は ["A-1", "B-2"] のように配列で渡されている前提とします。
+        const bookedSeatsRaw = /*[[${bookedSeats}]]*/ [];
+        
+        // DBから取得した予約済み座席データ（複数枚予約時に "A-1,A-2" となっているケースに対応）
+        const bookedSeats = bookedSeatsRaw.flatMap(s => s.split(',')).map(s => s.trim());
+        
+        const TICKET_PRICE = 15000; // 1枚あたりの単価 Point
+        const MAX_SELECT = 4;       // 1度に予約できる最大枚数
+		const CURRENT_POINT = /*[[${currentPoint}]]*/ 0;
+        /*]]>*/
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+			
+			const errorMsg = /*[[${errorMsg}]]*/ null;
+			            if (errorMsg) {
+			                Swal.fire({
+			                    icon: 'error',
+			                    title: '決済失敗',
+			                    text: errorMsg,
+			                    confirmButtonColor: '#FF6B00'
+			                });
+			            }
+						
+            const seatMapContainer = document.getElementById('seatMapContainer');
+            const selectedSeatsDisplay = document.getElementById('selectedSeatsDisplay');
+            const totalPriceDisplay = document.getElementById('totalPriceDisplay');
+            const hiddenSeatInfo = document.getElementById('hiddenSeatInfo');
+            const hiddenPriceInfo = document.getElementById('hiddenPriceInfo');
+            const btnCheckout = document.getElementById('btnCheckout');
+            const checkoutForm = document.getElementById('checkoutForm');
+
+            let selectedSeats = [];
+
+            // 1. 座席マップの動的生成
+            const generateSeatMap = () => {
+                for (let r = 0; r < maxRow; r++) {
+                    // 行のアルファベットを生成 (A, B, C ...)
+                    const rowLabelText = String.fromCharCode(65 + r); 
+                    
+                    const rowDiv = document.createElement('div');
+                    rowDiv.className = 'seat-row';
+
+                    // 左端の行ラベル
+                    const labelDiv = document.createElement('div');
+                    labelDiv.className = 'row-label';
+                    labelDiv.textContent = rowLabelText;
+                    rowDiv.appendChild(labelDiv);
+
+                    for (let c = 1; c <= maxCol; c++) {
+                        const seatId = `${rowLabelText}-${c}`;
+                        
+                        const seatBtn = document.createElement('div');
+                        seatBtn.className = 'seat';
+                        seatBtn.textContent = c;
+                        seatBtn.dataset.seatId = seatId;
+
+                        // 予約済み判定
+                        if (bookedSeats.includes(seatId)) {
+                            seatBtn.classList.add('booked');
+                        } else {
+                            // クリックイベントのバインド
+                            seatBtn.addEventListener('click', () => toggleSeat(seatBtn, seatId));
+                        }
+                        
+                        // [拡張用] 中央通路を作るロジック (例えば列の真ん中でマージンを入れる等)
+                        if (c === Math.floor(maxCol / 2)) {
+                            seatBtn.style.marginRight = '30px'; 
+                        }
+
+                        rowDiv.appendChild(seatBtn);
+                    }
+                    seatMapContainer.appendChild(rowDiv);
+                }
+            };
+
+            // 2. 座席選択のトグル処理
+            const toggleSeat = (seatEl, seatId) => {
+                if (seatEl.classList.contains('selected')) {
+                    // 選択解除
+                    seatEl.classList.remove('selected');
+                    selectedSeats = selectedSeats.filter(id => id !== seatId);
+                } else {
+                    // 選択処理（上限チェック）
+                    if (selectedSeats.length >= MAX_SELECT) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: '選択上限',
+                            text: `一度に予約できるのは${MAX_SELECT}席までです。`,
+                            confirmButtonColor: '#FF6B00'
+                        });
+                        return;
+                    }
+                    seatEl.classList.add('selected');
+                    selectedSeats.push(seatId);
+                }
+                
+                updateCheckoutState();
+            };
+
+            // 3. 決済状態とUIの更新
+            const updateCheckoutState = () => {
+                const count = selectedSeats.length;
+                const total = count * TICKET_PRICE;
+
+                if (count > 0) {
+                    // 選択順にソートして表示
+                    selectedSeats.sort();
+                    selectedSeatsDisplay.textContent = selectedSeats.join(', ');
+                    totalPriceDisplay.textContent = total.toLocaleString();
+                    
+                    hiddenSeatInfo.value = selectedSeats.join(',');
+                    hiddenPriceInfo.value = total;
+                    
+                    btnCheckout.classList.add('active');
+                } else {
+                    selectedSeatsDisplay.textContent = '-';
+                    totalPriceDisplay.textContent = '0';
+                    hiddenSeatInfo.value = '';
+                    hiddenPriceInfo.value = '0';
+                    
+                    btnCheckout.classList.remove('active');
+                }
+            };
+
+			// 4. 決済ボタンのサブミット処理 (トランザクション開始)
+			btnCheckout.addEventListener('click', () => {
+                if (selectedSeats.length === 0) return;
+
+                const total = selectedSeats.length * TICKET_PRICE;
+                const remainPoint = CURRENT_POINT - total;
+                const isShortage = remainPoint < 0;
+
+                Swal.fire({
+                    title: '決済へ進みますか？',
+                    iconHtml: '<i class="fa-solid fa-ticket-simple" style="color: #FF6B00;"></i>',
+                    customClass: { icon: 'swal-custom-icon' },
+                    html: `
+                        <div style="text-align: left; background: #f8f9fa; padding: 20px; border-radius: 12px; margin-top: 15px; border: 1px solid #eee;">
+                            <div style="margin-bottom: 10px; font-size: 1rem; color: #555;">
+                                <span style="display:inline-block; width: 110px;">選択座席 :</span> 
+                                <strong style="color: #333;">${selectedSeats.join(', ')}</strong>
+                            </div>
+                            
+                            <hr style="border:0; border-top:1px dashed #ddd; margin: 15px 0;">
+                            
+                            <div style="margin-bottom: 8px; font-size: 1rem; color: #555; display: flex; justify-content: space-between;">
+                                <span>保有ポイント :</span> 
+                                <strong>${CURRENT_POINT.toLocaleString()} P</strong>
+                            </div>
+                            <div style="margin-bottom: 8px; font-size: 1rem; color: #dc3545; display: flex; justify-content: space-between;">
+                                <span>決済ポイント :</span> 
+                                <strong>- ${total.toLocaleString()} P</strong>
+                            </div>
+                            
+                            <hr style="border:0; border-top:1px solid #ccc; margin: 10px 0;">
+                            
+                            <div style="font-size: 1.1rem; display: flex; justify-content: space-between; color: ${isShortage ? '#dc3545' : 'var(--primary-color)'};">
+                                <span>決済後残高 :</span> 
+                                <strong>${remainPoint.toLocaleString()} P</strong>
+                            </div>
+                            
+                            ${isShortage ? '<div style="color:#dc3545; font-size:0.85rem; margin-top:10px; text-align:center;">⚠ ポイントが不足しています。</div>' : ''}
+                        </div>
+                    `,
+                    showCancelButton: true,
+                    showConfirmButton: !isShortage, // ポイント不足時は決済ボタンを隠す
+                    confirmButtonColor: '#FF6B00',
+                    cancelButtonColor: '#999',
+                    confirmButtonText: '決済する',
+                    cancelButtonText: isShortage ? '閉じる' : 'キャンセル'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        checkoutForm.submit(); 
+                    }
+                });
+            });
+
+            // 初期レンダリングの実行
+            generateSeatMap();
+        });
+    </script>
+
+</div>
+
+</html>

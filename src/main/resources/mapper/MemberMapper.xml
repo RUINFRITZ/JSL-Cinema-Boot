@@ -52,4 +52,50 @@
         WHERE userid = #{userid}
     </select>
 
+	<select id="selectCurrentPoint" resultType="int">
+        SELECT point FROM member_cinema WHERE userid = #{userid}
+    </select>
+
+    <select id="selectPointRate" resultType="double">
+        SELECT g.point_rate
+        FROM member_cinema m
+        JOIN member_grade g ON m.mgrade = g.mgrade
+        WHERE m.userid = #{userid}
+    </select>
+
+    <update id="updateMemberPoint">
+        UPDATE member_cinema
+        SET point = point + #{amount}
+        WHERE userid = #{userid}
+    </update>
+
+    <insert id="insertPointHistory">
+        INSERT INTO point_history (
+            userid, 
+            amount, 
+            description, 
+            regdate
+        ) VALUES (
+            #{userid}, 
+            #{amount}, 
+            #{description}, 
+            NOW()
+        )
+    </insert>
+    
+    <select id="selectPointHistory" resultType="java.util.Map">
+        SELECT pno, amount, description, regdate
+        FROM point_history
+        WHERE userid = #{userid}
+        ORDER BY regdate DESC
+    </select>
+    
+    <update id="updateMemberInfo">
+        UPDATE member_cinema
+        SET name = #{name},
+            phone = #{phone},
+            email = #{email}
+        WHERE userid = #{userid}
+    </update>
+    
 </mapper>

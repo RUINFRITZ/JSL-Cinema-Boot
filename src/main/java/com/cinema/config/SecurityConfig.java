@@ -47,14 +47,11 @@ public class SecurityConfig {
             // 2. HTTP リクエストの認可設定 (URLごとのアクセス権限)
             .authorizeHttpRequests(auth -> auth
                 // CSS, JS, 画像などの静的リソースは認証なしでアクセス許可 (permitAll)
-                // [追加] '/upload/**' : アップロードされたポスター画像へのアクセスを許可します (WebMvcConfigと連携)
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/upload/**").permitAll()
                 
                 // 公開ページ (メイン、ログイン、会員登録) は誰でもアクセス可能
-                // [追加] '/movie/**' : 映画リストや詳細ページはログインなしでも閲覧可能にします
-                .requestMatchers("/", "/login", "/register", "/movie/**").permitAll()
-                
-                // [追加] 管理者専用ページ設定
+                .requestMatchers("/", "/member/login", "/member/register", "/movie/**", "/api/review/list/**").permitAll()
+                .requestMatchers("/ticket/**", "/member/update").authenticated()
                 // URLが '/admin/' で始まるリクエストは 'ADMIN' 権限を持つユーザーのみアクセス可能
                 // 一般ユーザーがアクセスしようとすると 403 (Forbidden) エラーまたはログイン画面へ転送されます
                 .requestMatchers("/admin/**").hasRole("ADMIN")
@@ -65,10 +62,10 @@ public class SecurityConfig {
 
             // 3. フォームログイン設定
             .formLogin(form -> form
-                .loginPage("/login")                 // カスタムログインページの URL
-                .loginProcessingUrl("/login")        // ログイン処理を実行する URL (HTMLフォームの action と一致させる)
+                .loginPage("/member/login")                 // カスタムログインページの URL
+                .loginProcessingUrl("/member/login")        // ログイン処理を実行する URL (HTMLフォームの action と一致させる)
                 .defaultSuccessUrl("/?welcome=true", true)        // ログイン成功時のリダイレクト先
-                .failureUrl("/login?error=true")     // ログイン失敗時のリダイレクト先
+                .failureUrl("/member/login?error=true")     // ログイン失敗時のリダイレクト先
                 .usernameParameter("userid")         // ログインフォームのユーザー名 input の name 属性
                 .passwordParameter("password")       // ログインフォームのパスワード input の name 属性
                 .permitAll()
@@ -77,7 +74,7 @@ public class SecurityConfig {
             // 4. ログアウト設定
             .logout(logout -> logout
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout")) // ログアウト処理の URL
-                .logoutSuccessUrl("/login?logout=true") // ログアウト成功時のリダイレクト先
+                .logoutSuccessUrl("/member/login?logout=true") // ログアウト成功時のリダイレクト先
                 .invalidateHttpSession(true)            // セッションを無効化
                 .deleteCookies("JSESSIONID")            // JSESSIONID クッキーを削除
                 .permitAll()

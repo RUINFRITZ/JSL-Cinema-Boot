@@ -5,104 +5,17 @@
 
 <div layout:fragment="content">
     
-    <style>
-        /* [追加] 映画カード内のレイアウトおよびスタイル設定 */
-        .movie-card-xl {
-            min-width: 280px; /* カードの基本幅 */
-            background: #fff;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.3s ease;
-        }
-        
-        .movie-card-xl:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        }
-
-        .movie-poster {
-            width: 100%;
-            height: 400px;
-            object-fit: cover;
-            border-bottom: 1px solid #eee;
-        }
-
-        .movie-info {
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-
-        .movie-title {
-            font-size: 1.1rem;
-            font-weight: 800;
-            color: #333;
-            margin: 0 0 10px 0;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .movie-catchphrase {
-            font-size: 0.85rem;
-            color: #666;
-            margin: 0 0 20px 0;
-            line-height: 1.4;
-            height: 38px; /* 2行分の高さを確保 */
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-        }
-
-        .btn-reserve {
-            margin-top: auto;
-            display: block;
-            text-align: center;
-            background: var(--primary-color);
-            color: #fff;
-            padding: 12px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-
-        .btn-reserve:hover {
-            background: #cc5500;
-            color: #fff;
-        }
-        
-        /* スクロールコンテナのスタイル微調整 */
-        .movie-scroll-container {
-            display: flex;
-            gap: 20px;
-            overflow-x: auto;
-            padding-bottom: 20px;
-            /* スクロールバーを隠す (Hide Scrollbar) */
-            -ms-overflow-style: none;  
-            scrollbar-width: none;  
-        }
-        .movie-scroll-container::-webkit-scrollbar {
-            display: none;
-        }
-    </style>
-
-    <div class="glass-panel" style="padding: 42px 50px; text-align: center; margin-bottom: 30px;">
+    <div class="glass-panel" style="padding: 16px 50px; text-align: center; margin-bottom: 16px;">
         
         <p style="font-size: 0.9rem; color: var(--primary-color); font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px;">
-            JSL CINEMA <span style ="color : gray">REMASTER</span>
+            JSL シネマ <span style ="color : gray">REMASTER</span>
         </p>
 
         <h1 style="font-size: 3.5rem; margin: 0 0 20px 0; line-height: 1.2; font-weight: 800; letter-spacing: -0.05em;">
             映画体験を、<span style="color: var(--primary-color);">再定義</span>する。
         </h1>
         
-        <p style="color: #555; font-size: 1.1rem; margin-bottom: 40px; line-height: 1.8;">
+        <p style="color: #555; font-size: 1.1rem; margin-bottom: 10px; line-height: 1.8;">
         	あなただけの特等席で、最高の物語に出会う旅へ。<br>
             圧倒的な没入感と、スマートな予約システム。
         </p>
@@ -110,16 +23,18 @@
 
 	<div class="movie-scroll-container" id="movieScroll">
         
-        <div class="movie-card-xl" th:each="movie : ${movieList}">
-            <img th:src="@{/images/movie/} + ${movie.poster}" alt="Movie Poster" class="movie-poster" onerror="this.src='/images/default_poster.jpg'">
-            
-            <div class="movie-info">
-                <h3 class="movie-title" th:title="${movie.title}" th:text="${movie.title}">映画タイトル</h3>
-                <p class="movie-catchphrase" th:text="${movie.catchphrase}">ここにキャッチフレーズが入ります。</p>
-                
-                <a th:href="@{/ticket/reserve(mno=${movie.mno})}" class="btn-reserve">予約する</a>
-            </div>
-        </div>
+		<div class="movie-card-xl" th:each="movie : ${movieList}">
+		    <a th:href="@{/movie/detail/{mno}(mno=${movie.mno})}" class="poster-link">
+		        <img th:src="@{'/upload/' + ${movie.poster}}" alt="Movie Poster" class="movie-poster" onerror="this.src='/images/default_poster.jpg'">
+		    </a>
+		    
+		    <div class="movie-info">
+		        <h3 class="movie-title" th:title="${movie.title}" th:text="${movie.title}">映画タイトル</h3>
+		        <p class="movie-catchphrase" th:text="${movie.catchphrase}">ここにキャッチフレーズが入ります。</p>
+		        
+		        <a th:href="@{/ticket/reserve(mno=${movie.mno})}" class="btn-reserve">予約する</a>
+		    </div>
+		</div>
 
         <div th:if="${movieList == null or movieList.isEmpty()}" style="width: 100%; text-align: center; padding: 50px; color: #888;">
             現在上映中の映画がありません。
@@ -131,7 +46,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             
 			// -------------------------------------------------------
-            // 1. ログイン成功トースト通知 (Login Success Toast)
+            // 1. ログイン成功トースト通知
             // -------------------------------------------------------
             const urlParams = new URLSearchParams(window.location.search);
             const isWelcome = urlParams.get('welcome');
@@ -159,7 +74,7 @@
             }
 			
 			// -------------------------------------------------------
-	        // 2. マウスホイールによる横スクロール (Horizontal Scroll)
+	        // 2. マウスホイールによる横スクロール
 	        // -------------------------------------------------------
 	        const scrollContainer = document.getElementById("movieScroll");
 	
@@ -173,12 +88,11 @@
 	            });
 
                 // -------------------------------------------------------
-                // 3. 4秒間隔の自動スクロール (Auto Scroll Interval)
+                // 3. 3.3秒間隔の自動スクロール
                 // -------------------------------------------------------
                 let autoScrollTimer;
 
                 const startAutoScroll = () => {
-                    // 4000ミリ秒（4秒）ごとに実行
                     autoScrollTimer = setInterval(() => {
                         // 現在のスクロール位置が終端に達しているか確認
                         const maxScrollLeft = scrollContainer.scrollWidth - scrollContainer.clientWidth;
@@ -189,10 +103,10 @@
                         } else {
                             // カード1枚分（幅 + gap分として約300px）を右へスクロール
                             // ※ 実際のカード幅を取得して動的に計算することも可能です
-                            const cardWidth = scrollContainer.querySelector('.movie-card-xl')?.offsetWidth + 20 || 300;
+                            const cardWidth = scrollContainer.querySelector('.movie-card-xl')?.offsetWidth + 28 || 300;
                             scrollContainer.scrollBy({ left: cardWidth, behavior: 'smooth' });
                         }
-                    }, 4000); 
+                    }, 3333); 
                 };
 
                 // 初期状態で自動スクロールを開始

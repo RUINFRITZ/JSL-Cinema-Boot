@@ -38,5 +38,8 @@ public class Movie {
     private String catchphrase; 
     
     /* 登録日時 */
-    private String regdate;     
+    private String regdate;  
+    
+    /* 平均評価 */
+    private Double avgRating;
 }

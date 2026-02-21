@@ -12,5 +12,53 @@
     <insert id="insertSchedule" parameterType="com.cinema.domain.Schedule">
         INSERT INTO schedule (mno, tno, sdate) VALUES (#{mno}, #{tno}, #{sdate})
     </insert>
+    
+    <select id="selectAvailableMovies" resultType="com.cinema.domain.Movie">
+        SELECT DISTINCT m.mno, m.title, m.poster, m.runtime
+        FROM movie m
+        JOIN schedule s ON m.mno = s.mno
+        WHERE s.sdate >= NOW()
+        ORDER BY m.title ASC
+    </select>
+
+    <select id="selectAvailableDates" resultType="java.lang.String">
+        SELECT DATE_FORMAT(sdate, '%Y-%m-%d') AS available_date
+        FROM schedule
+        WHERE mno = #{mno} 
+          AND sdate >= NOW()
+        GROUP BY DATE_FORMAT(sdate, '%Y-%m-%d')
+        ORDER BY available_date ASC
+    </select>
+
+    <select id="selectSchedulesByDate" resultType="java.util.Map">
+        SELECT 
+            s.sno,
+            DATE_FORMAT(s.sdate, '%H:%i') AS start_time,
+            s.tno,
+            t.tname AS theater_name
+        FROM schedule s
+        JOIN theater t ON s.tno = t.tno
+        WHERE s.mno = #{mno}
+          AND DATE_FORMAT(s.sdate, '%Y-%m-%d') = #{sdate}
+          AND s.sdate >= NOW()
+        ORDER BY s.sdate ASC
+    </select>
+    
+    <select id="selectScheduleDetail" resultType="java.util.Map">
+        SELECT 
+            s.sno, s.sdate,
+            t.tname, t.trow, t.tcol,
+            m.title, m.poster, m.runtime
+        FROM schedule s
+        JOIN theater t ON s.tno = t.tno
+        JOIN movie m ON s.mno = m.mno
+        WHERE s.sno = #{sno}
+    </select>
+
+    <select id="selectBookedSeats" resultType="java.lang.String">
+        SELECT seat_info 
+        FROM reservation 
+        WHERE sno = #{sno} AND status != 'CANCEL'
+    </select>
 
 </mapper>

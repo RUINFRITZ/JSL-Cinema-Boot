@@ -27,6 +27,11 @@ body {
     min-height: 100vh;
 }
 
+button, input, select, textarea {
+    font-family: inherit;
+    font-size: inherit;
+}
+
 /* -----------------------------------------------------------
    Glassmorphism Components (グラスモーフィズム・コンポーネント)
    ----------------------------------------------------------- */
@@ -288,7 +293,7 @@ header {
 
 /* コンテンツエリア */
 .container {
-    padding-top: 122px; /* Headerの高さ分空ける */
+    padding-top: 100px; /* Headerの高さ分空ける */
     margin: 0 auto;
     padding-bottom: 22px;
 	
@@ -308,106 +313,150 @@ header {
 
 /* -----------------------------------------------------------
    Horizontal Scroll Movie List (横スクロール映画リスト)
+   [修正] 2Kモニター最適化：450pxベースの正確な2:3比率とタイトル強調
    ----------------------------------------------------------- */
 
-/* スクロールコンテナ */
-.movie-scroll-container {
-    display: flex;
-    gap: 20px;
-    overflow-x: auto;
-    padding-top: 20px;
-    padding-bottom: 40px;
-    padding-left: 20px;
-    padding-right: 20px;
-    scroll-behavior: smooth;
-    /* スクロールバーを隠す */
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
+   /* スクロールコンテナ */
+   .movie-scroll-container {
+       display: flex;
+       gap: 28px;                 
+       overflow-x: auto;          /* 横スクロールを有効化 */
+       
+       /* 上下左右の余白設定。カードが画面端で切れるように調整 */
+       padding: 20px 50px 50px 10px; /* 上 右 下 左 */
 
-.movie-scroll-container::-webkit-scrollbar {
-    display: none;
-}
+       scroll-behavior: smooth;   /* 滑らかなスクロール */
+       
+       /* スクロールバーを隠す設定 */
+       -ms-overflow-style: none;  /* IE, Edge */
+       scrollbar-width: none;     /* Firefox */
+   }
 
-/* 映画カード本体 */
-.movie-card-xl {
-    flex: 0 0 auto;
-    width: 300px; /* 実データに合わせて幅を調整 */
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--glass-border);
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    overflow: hidden; /* 子要素（画像）が角丸をはみ出さないように設定 */
-    display: flex;
-    flex-direction: column;
-    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-    cursor: pointer;
-    position: relative;
-}
+   .movie-scroll-container::-webkit-scrollbar {
+       display: none;             /* Chrome, Safari */
+   }
 
-.movie-card-xl:hover {
-    transform: translateY(-15px) scale(1.02);
-    box-shadow: 0 20px 50px rgba(255, 107, 0, 0.2);
-    border-color: var(--primary-color);
-    z-index: 10;
-}
+   /* 映画カード本体 */
+      .movie-card-xl {
+      flex: 0 0 auto;            
+      width: 450px;
+      
+      /* カード全体の高さを ポスター(675px) + 情報エリア(185px) = 860px に固定 */
+      
+      background: rgba(255, 255, 255, 0.95); 
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;       
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12); 
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      cursor: pointer;
+      position: relative;
+      }
 
-/* 新規追加: ポスター画像 */
-.movie-poster {
-    width: 100%;
-    height: 400px;
-    object-fit: cover;
-    border-bottom: 1px solid #eee;
-}
+   .movie-card-xl:hover {
+       transform: translateY(-10px) scale(1.015); 
+       box-shadow: 0 30px 60px rgba(255, 107, 0, 0.25);
+       border-color: var(--primary-color);
+       z-index: 10;
+   }
 
-/* 新規追加: 映画情報エリア */
-.movie-info {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-}
+   /* ポスター画像 */
+      .movie-poster {
+          width: 100% !important;
+          height: 550px !important; 
+		  
+          min-height: 675px !important; 
+          max-height: 675px !important; 
+          
+          flex-shrink: 0 !important;
+          object-fit: cover; 
+          border-bottom: 1px solid #eee;
+      }
 
-/* 新規追加: タイトル */
-.movie-title {
-    font-size: 1.2rem;
-    font-weight: 800;
-    color: var(--text-main);
-    margin: 0 0 10px 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis; /* 長いタイトルを「...」で省略 */
-}
+   /* 映画情報エリア */
+   .movie-info {
+       padding: 16px; 
+       display: flex;
+       flex-direction: column;
+       flex-grow: 1;
+       justify-content: space-between;
+	   box-sizing: border-box;
+   }
 
-/* 新規追加: キャッチフレーズ */
-.movie-catchphrase {
-    font-size: 0.85rem;
-    color: var(--text-sub);
-    margin: 0 0 20px 0;
-    line-height: 1.4;
-    height: 38px; /* 2行分の高さを固定確保 */
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 2; /* 2行を超えたら省略 */
-    -webkit-box-orient: vertical;
-}
+   /* タイトル */
+   .movie-title {
+       font-size: 1.6rem !important;
+       font-weight: 1100;
+       color: var(--text-main);
+       margin: 0 0 10px 0;
+       white-space: nowrap;
+       overflow: hidden;
+       text-overflow: ellipsis;
+   }
 
-/* 新規追加: 予約ボタン */
-.btn-reserve {
-    margin-top: auto; /* カードの下部に押し下げる */
-    display: block;
+   /* キャッチフレーズ */
+   .movie-catchphrase {
+       font-size: 0.95rem !important;
+       color: var(--text-sub);
+       margin: 0 0 10px 0; /* タイトルとボタンの間の余白を調整 */
+       line-height: 1.0;
+       
+       display: -webkit-box;
+       -webkit-line-clamp: 2;
+       -webkit-box-orient: vertical;
+       overflow: hidden;
+       height: 3.0em; 
+   }
+
+   /* 予約ボタン */
+   .btn-reserve {
+       display: block;
+       text-align: center;
+       background: var(--primary-color);
+       color: #fff;
+       padding: 15px;
+       font-size: 1.2rem;
+       border-radius: 16px;
+       text-decoration: none;
+       font-weight: 800;
+       transition: all 0.3s ease;
+       box-shadow: 0 4px 15px rgba(255, 107, 0, 0.2);
+   }
+
+   .btn-reserve:hover {
+       background: var(--primary-hover);
+       box-shadow: 0 8px 25px rgba(255, 107, 0, 0.4);
+       transform: translateY(-2px);
+   }
+
+/* ---- フッター ---- */
+
+footer {
+    margin-top: 2px;
+    padding: 22px 0;
     text-align: center;
-    background: var(--primary-color);
-    color: #fff;
-    padding: 12px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: background 0.3s;
+    color: var(--text-sub);
+    font-size: 14px;
+    border-top: 1px solid rgba(0,0,0,0.05);
 }
 
-.btn-reserve:hover {
-    background: var(--primary-hover);
-    color: #fff;
+/* ボタン */
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
 }

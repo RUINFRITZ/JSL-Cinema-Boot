@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<div layout:fragment="content">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        .detail-container { padding: 60px 20px; max-width: 1300px; margin: 0 auto; }
+        
+        .glass-detail-card {
+            background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 30px; padding: 50px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1); display: grid; grid-template-columns: 450px 1fr; gap: 60px;
+        }
+        
+        .detail-poster-wrapper { position: sticky; top: 100px; }
+        .detail-poster { width: 100%; border-radius: 16px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); object-fit: cover; }
+        .info-header { border-bottom: 2px solid rgba(0, 0, 0, 0.05); padding-bottom: 25px; margin-bottom: 35px; }
+        .info-title { font-size: 3.5rem; font-weight: 900; margin-bottom: 15px; letter-spacing: -2px; color: #1a1a1a; }
+        .info-meta { display: flex; gap: 25px; color: #666; font-weight: 700; font-size: 1.1rem; }
+        .summary-section { line-height: 2; color: #333; font-size: 1.15rem; margin-bottom: 45px; }
+        .summary-section h3 { font-size: 1.5rem; font-weight: 800; margin-bottom: 20px; color: #000; }
+        
+        .action-btns { display: flex; align-items: center; gap: 20px; }
+        .action-btns a { text-decoration: none !important; }
+        
+        .btn-reserve-lg {
+            margin-left: auto; background: var(--primary-color); color: #fff; padding: 18px 45px;
+            font-size: 1.3rem; font-weight: 800; border-radius: 16px; transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(255, 107, 0, 0.2); display: inline-flex; 
+            align-items: center; gap: 12px; border: none; cursor: pointer;
+        }
+        .btn-reserve-lg:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(255, 107, 0, 0.3); background: var(--primary-hover); }
+
+        .btn-back {
+            background: rgba(0, 0, 0, 0.05); color: #333; padding: 18px 30px; font-size: 1.1rem; font-weight: 700;
+            border-radius: 16px; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.08); text-decoration: none;
+        }
+        .btn-back:hover { background: rgba(0, 0, 0, 0.1); color: #000; }
+
+        .star-rating-input { display: flex; gap: 5px; font-size: 1.8rem; cursor: pointer; justify-content: flex-start; margin-bottom: 22px; }
+        .star-rating-input i { color: #ccc; transition: color 0.2s; }
+        .star-rating-input i.active { color: #FFD700; }
+
+        .review-panel { background: rgba(255, 255, 255, 0.5); border-radius: 16px; padding: 35px; margin-top: 50px; border: 1px solid rgba(0, 0, 0, 0.1); }
+        .review-write-box { display: flex; flex-direction: column; width: 100%; }
+        .review-textarea { width: 95%; height: 100px; padding: 15px; border-radius: 16px; resize: none; border: 1px solid rgba(0, 0, 0, 0.1); background: white; margin-bottom: 22px; }
+        
+        .review-submit-wrapper { text-align: right; width: 100%; }
+    </style>
+
+    <div class="detail-container">
+        <div class="glass-detail-card">
+            <div class="detail-poster-wrapper">
+                <img th:src="@{'/upload/' + ${movie.poster}}" class="detail-poster" alt="Poster" 
+                     onerror="this.src='/images/default_poster.jpg'">
+            </div>
+
+            <div class="info-content">
+                <div class="info-header">
+                    <h1 class="info-title" th:text="${movie.title}">映画タイトル</h1>
+                    <p style="font-size: 1.4rem; color: var(--primary-color); font-weight: 800; margin-bottom: 15px;" 
+                       th:text="${movie.catchphrase}">キャッチフレーズ</p>
+                    <div class="info-meta">
+                        <span><i class="fa-regular fa-clock"></i> [[${movie.runtime}]] 分</span>
+                        <span><i class="fa-regular fa-calendar-check"></i> 公開日: [[${movie.opendate}]]</span>
+                        <span><i class="fa-solid fa-star" style="color: #FFD700;"></i> 
+                            <span th:text="${movie.avgRating != null ? #numbers.formatDecimal(movie.avgRating, 1, 1) : '0.0'}">0.0</span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="summary-section">
+                    <h3>〈 あらすじ 〉</h3>
+                    <p th:text="${movie.content}">ここに映画のあらすじが表示されます。</p>
+                </div>
+
+                <div class="action-btns">
+                    <a href="javascript:history.back()" class="btn-back">
+                        <i class="fa-solid fa-arrow-left"></i> 前の画面へ戻る
+                    </a>
+                    <a th:href="@{/ticket/reserve(mno=${movie.mno})}" class="btn-reserve-lg">
+                        <i class="fa-solid fa-ticket-simple"></i> 座席を予約する
+                    </a>
+                </div>
+
+                <div class="review-panel">
+                    <h3 style="font-weight: 800; margin-bottom: 25px;">
+                        <i class="fa-solid fa-comment-dots" style="color: var(--primary-color);"></i> レビュー・評価
+                    </h3>
+
+                    <div th:if="${#authorization.expression('isAuthenticated()')}" class="review-write-box">
+                        <div class="star-rating-input" id="starInput">
+                            <i class="fa-solid fa-star active" data-value="1"></i>
+                            <i class="fa-solid fa-star active" data-value="2"></i>
+                            <i class="fa-solid fa-star active" data-value="3"></i>
+                            <i class="fa-solid fa-star active" data-value="4"></i>
+                            <i class="fa-solid fa-star active" data-value="5"></i>
+                            <input type="hidden" id="selectedStar" value="5">
+                        </div>
+                        <textarea id="reviewComments" class="review-textarea" placeholder="映画の感想を聞かせてください。"></textarea>
+                        <div class="review-submit-wrapper">
+                            <button type="button" class="btn-reserve-lg" style="margin-left: 0;" onclick="submitReview()">投稿する</button>
+                        </div>
+                    </div>
+
+					<div id="reviewListContainer" style="margin-top: 30px;">
+					    <div style="text-align: center; padding: 30px; color: #999;">レビューを読み込んでいます...</div>
+					</div>
+                </div>
+            </div>
+        </div>
+    </div>
+	
+	<script th:inline="javascript">
+	        /*<![CDATA[*/
+	        
+	        // サーバーサイド変数の安全な取得
+	        const mno = /*[[${movie.mno}]]*/ null;
+	        
+	        // ログイン中のユーザーID（Spring Security連携）
+	        const currentLoginUser = /*[[${#authentication.name}]]*/ null;
+
+	        // 星評価の制御ロジック
+	        document.querySelectorAll('#starInput i').forEach(star => {
+	            star.addEventListener('click', function() {
+	                const value = this.getAttribute('data-value');
+	                document.getElementById('selectedStar').value = value;
+	                
+	                document.querySelectorAll('#starInput i').forEach(s => {
+	                    s.classList.toggle('active', s.getAttribute('data-value') <= value);
+	                });
+	            });
+	        });
+
+	        /*
+	         * レビュー登録処理
+	         */
+	        async function submitReview() {
+	            const star = document.getElementById('selectedStar').value;
+	            const comments = document.getElementById('reviewComments').value;
+
+	            if(!comments.trim()) {
+	                Swal.fire({
+	                    icon: 'warning',
+	                    title: '入力エラー',
+	                    text: 'コメントを入力してください。',
+	                    confirmButtonColor: 'var(--primary-color)'
+	                });
+	                return;
+	            }
+
+	            try {
+	                const response = await fetch('/api/review/register', {
+	                    method: 'POST',
+	                    headers: { 'Content-Type': 'application/json' },
+	                    body: JSON.stringify({ mno, star, comments })
+	                });
+
+	                if(response.ok) {
+	                    document.getElementById('reviewComments').value = '';
+	                    document.querySelectorAll('#starInput i').forEach(s => s.classList.add('active'));
+	                    document.getElementById('selectedStar').value = 5;
+	                    loadReviews();
+	                } else {
+	                    Swal.fire({ icon: 'error', title: 'エラー', text: '投稿に失敗しました。認証状態を確認してください。' });
+	                }
+	            } catch (e) {
+	                console.error("Submission Failure:", e);
+	            }
+	        }
+
+	        /*
+	         * レビュー一覧取得およびレンダリング
+	         */
+	        async function loadReviews() {
+	            try {
+	                const response = await fetch(`/api/review/list/${mno}`);
+	                const reviews = await response.json();
+	                const container = document.getElementById('reviewListContainer');
+	                
+	                if (!reviews || reviews.length === 0) {
+	                    container.innerHTML = `
+	                        <div style="text-align: center; padding: 30px; color: #999;">
+	                            現在、投稿されたレビューはございません。<br>
+	                            最初のレビューを投稿してみませんか？
+	                        </div>`;
+	                    return;
+	                }
+
+	                container.innerHTML = reviews.map(r => {
+	                    const isOwner = currentLoginUser && currentLoginUser !== 'anonymousUser' && (currentLoginUser === r.userid);
+	                    const safeComments = r.comments ? r.comments.replace(/`/g, '\\`').replace(/\n/g, '\\n') : '';
+
+	                    return `
+	                        <div id="review-box-${r.rev_no}" style="padding: 20px; border-bottom: 1px solid rgba(0,0,0,0.05); text-align: left;">
+	                            <div style="display:flex; justify-content:space-between; align-items:center;">
+	                                <strong>${r.userid}</strong>
+	                                <div style="display:flex; align-items:center; gap: 15px;">
+	                                    <span style="color: #FFD700;">${'★'.repeat(r.star)}${'☆'.repeat(5-r.star)}</span>
+	                                    ${isOwner ? `
+	                                        <div>
+	                                            <button onclick="showEditForm(${r.rev_no}, ${r.star}, \`${safeComments}\`)" style="background:none; border:none; color:var(--primary-color); cursor:pointer; font-weight:bold;">修正</button> <span style="color:#ccc;">|</span> 
+	                                            <button onclick="deleteReview(${r.rev_no})" style="background:none; border:none; color:#999; cursor:pointer; font-weight:bold;">削除</button>
+	                                        </div>
+	                                    ` : ''}
+	                                </div>
+	                            </div>
+	                            <p style="margin: 10px 0; color: #444; line-height: 1.6;">${r.comments}</p>
+	                            <small style="color: #999;">${r.regdate}</small>
+	                        </div>
+	                    `;
+	                }).join('');
+	            } catch (e) {
+	                console.error("Fetch Failure:", e);
+	                document.getElementById('reviewListContainer').innerHTML = 
+	                    '<div style="text-align: center; padding: 30px; color: #ff4d4d;">レビューの読み込み中にエラーが発生いたしました。</div>';
+	            }
+	        }
+
+	        /*
+	         * レビュー削除処理 (SweetAlert2を適用)
+	         */
+	        function deleteReview(rev_no) {
+	            Swal.fire({
+	                title: '本当に削除しますか？',
+	                text: "この操作は取り消すことができません。",
+	                icon: 'warning',
+	                showCancelButton: true,
+	                confirmButtonColor: '#ff4d4d',
+	                cancelButtonColor: '#999',
+	                confirmButtonText: '削除する',
+	                cancelButtonText: 'キャンセル'
+	            }).then(async (result) => {
+	                if (result.isConfirmed) {
+	                    try {
+	                        const response = await fetch(`/api/review/delete/${rev_no}`, {
+	                            method: 'DELETE'
+	                        });
+
+	                        if(response.ok) {
+	                            Swal.fire({
+                                    title: '削除完了',
+                                    text: 'レビューが削除されました。',
+                                    icon: 'success',
+                                    confirmButtonColor: 'var(--primary-color)'
+                                });
+	                            loadReviews();
+	                        } else {
+	                            Swal.fire('エラー', '削除する権限がございません。', 'error');
+	                        }
+	                    } catch (e) {
+	                        console.error("Delete Failure:", e);
+	                    }
+	                }
+	            });
+	        }
+
+	        /*
+	         * レビュー修正用の入力フォーム表示
+	         */
+	        function showEditForm(rev_no, currentStar, currentComments) {
+	            const box = document.getElementById(`review-box-${rev_no}`);
+	            
+	            let starOptions = '';
+	            for(let i=5; i>=1; i--) {
+	                const selected = (i === currentStar) ? 'selected' : '';
+	                const stars = '★'.repeat(i) + '☆'.repeat(5-i);
+	                starOptions += `<option value="${i}" ${selected}>${stars}</option>`;
+	            }
+
+	            box.innerHTML = `
+	                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+	                    <strong>${currentLoginUser}</strong>
+	                    <select id="edit-star-${rev_no}" style="padding: 5px; border-radius: 8px; border: 1px solid #ccc;">
+	                        ${starOptions}
+	                    </select>
+	                </div>
+	                <textarea id="edit-comments-${rev_no}" style="width: 100%; height: 80px; padding: 10px; border-radius: 12px; resize: none; border: 1px solid #ccc; margin-bottom: 10px;">${currentComments}</textarea>
+	                <div style="text-align: right;">
+	                    <button onclick="loadReviews()" style="padding: 8px 15px; border-radius: 8px; border: 1px solid #ccc; background: white; cursor: pointer; color: #666;">キャンセル</button>
+	                    <button onclick="updateReview(${rev_no})" style="padding: 8px 15px; border-radius: 8px; border: none; background: var(--primary-color); color: white; cursor: pointer; margin-left: 5px;">保存する</button>
+	                </div>
+	            `;
+	        }
+
+	        /*
+	         * レビュー修正処理
+	         */
+	        async function updateReview(rev_no) {
+	            const star = document.getElementById(`edit-star-${rev_no}`).value;
+	            const comments = document.getElementById(`edit-comments-${rev_no}`).value;
+
+	            if(!comments.trim()) {
+	                Swal.fire({ icon: 'warning', title: '入力エラー', text: 'コメントを入力してください。', confirmButtonColor: 'var(--primary-color)' });
+	                return;
+	            }
+
+	            try {
+	                const response = await fetch('/api/review/update', {
+	                    method: 'PUT',
+	                    headers: { 'Content-Type': 'application/json' },
+	                    body: JSON.stringify({ rev_no, star, comments })
+	                });
+
+	                if(response.ok) {
+	                    loadReviews();
+	                } else {
+	                    Swal.fire('エラー', '修正処理に失敗いたしました。', 'error');
+	                }
+	            } catch (e) {
+	                console.error("Update Failure:", e);
+	            }
+	        }
+
+	        document.addEventListener('DOMContentLoaded', loadReviews);
+	        /*]]>*/
+	    </script>
+</div>
+</html>
