@@ -2,6 +2,8 @@
 
 # 🎬 JSL Cinema REMASTER (Spring Boot & MyBatis)
 **JSL人材開発院 Cloud連携Web開発者課程26期 個人プロジェクト II**
+
+
 [![Presentation](https://img.shields.io/badge/Presentation-View_Slide-E67E22?style=for-the-badge&logo=google-chrome)](https://RUINFRITZ.github.io/JSL-Cinema-Boot/presentation.html)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5.9-6DB33F?style=flat-square&logo=spring-boot)
 ![Java](https://img.shields.io/badge/Java-17-007396?style=flat-square&logo=java)
