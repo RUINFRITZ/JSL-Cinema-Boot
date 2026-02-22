@@ -21,7 +21,7 @@
 
 | Category | Technology | Version | Selection Reason & Appeal (選定理由) |
 | :--- | :--- | :--- | :--- |
-| **Language** | Java | 17 (LTS) | **[標準と安定性]** Recordパターンなどを活用し、不要なコードを削減して可読性を向上。 |
+| **Language** | Java | 17 (LTS) | **[標準と安定性]** 不要なコードを削減して可読性を向上。 |
 | **Framework** | Spring Boot | 3.5.9 | **[生産性とモダン開発]** AutoConfigurationにより設定を短縮し、予約・決済などのコアビジネスロジックの実装に集中。 |
 | **Database** | MySQL | 8.0.42 | **[データ整合性]** 映画予約システムの要であるトランザクション(ACID)処理を完璧に遂行するため。 |
 | **O/R Mapper** | MyBatis | 3.0.3 | **[SQL制御能力]** 日本のSI現場で求められる複雑なクエリ作成に対応するため、JPAではなくSQLの直接チューニングが可能なMyBatisを選定。 |
