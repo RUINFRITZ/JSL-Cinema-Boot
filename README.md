@@ -8,7 +8,7 @@
 ![Java](https://img.shields.io/badge/Java-17-007396?style=flat-square&logo=java)
 ![MyBatis](https://img.shields.io/badge/MyBatis-3.0.3-black?style=flat-square)
 ![MySQL](https://img.shields.io/badge/MySQL-8.0.42-4479A1?style=flat-square&logo=mysql)
-![Thymeleaf](https://img.shields.io/badge/Thymeleaf-3.x-005F0F?style=flat-square&logo=thymeleaf)
+![Thymeleaf](https://img.shields.io/badge/Thymeleaf-3.1.3-005F0F?style=flat-square&logo=thymeleaf)
 
 ## 📌 Project Overview (プロジェクト概要)
 既存のJSPベースのレガシー映画予約システムを、最新の **Spring Boot 3.x & MyBatis** アーキテクチャへと全面リファクタリング（Remaster）した個人プロジェクトです。
