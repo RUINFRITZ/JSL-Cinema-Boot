@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio : JSL シネマ Boot REMASTER</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* === Base & Background === */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans JP', sans-serif; }
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* === Glassmorphism Slide Container === */
+        .slider-container {
+            position: relative;
+            width: 90vw;
+            max-width: 1450px;
+            height: 85vh;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+        }
+
+        /* === Individual Slide === */
+        .slide {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            padding: 60px;
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+            pointer-events: none; 
+            display: flex;
+            flex-direction: column;
+        }
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+        }
+
+        /* === Slide Typography & Layout === */
+        .slide-header { border-bottom: 2px solid rgba(255, 107, 0, 0.5); padding-bottom: 20px; margin-bottom: 40px; }
+        .slide-title { font-size: 2.5rem; font-weight: 900; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .slide-subtitle { font-size: 1.4rem; color: #E67E22; font-weight: 700; margin-top: 10px; letter-spacing: 2px; }
+        
+        .slide-content { flex: 1; display: flex; gap: 40px; }
+        .half-col { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        
+        .point-box {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            border-radius: 16px;
+            border-left: 5px solid var(--primary-color, #E67E22);
+            margin-bottom: 20px;
+            line-height: 1.8;
+            font-size: 1.15rem;
+        }
+
+        /* YouTube iframe Wrapper */
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 ratio */
+            height: 0;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .video-wrapper iframe {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        }
+
+        /* === Navigation Controls === */
+        .controls {
+            position: absolute;
+            bottom: 30px; right: 40px;
+            display: flex; gap: 15px; align-items: center;
+        }
+        .btn-nav {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .btn-nav:hover { background: #E67E22; border-color: #E67E22; transform: scale(1.1); }
+        .page-indicator { font-size: 1.1rem; font-weight: 700; letter-spacing: 2px; color: rgba(255,255,255,0.6); margin: 0 15px; }
+
+        /* === Image Pan & Zoom Effect === */
+        .zoom-container {
+            flex: 1; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            position: relative; 
+            overflow: hidden;
+            padding: 20px;
+            cursor: zoom-in;
+        }
+        .pan-zoom-img {
+            width: 66.2%; 
+            height: 100%; 
+            object-fit: contain;
+            transition: transform 0.3s ease-out;
+            will-change: transform;
+        }
+
+    </style>
+
+</head>
+
+<body>
+    <div class="slider-container">
+
+        <!-- 01 -->
+        <div class="slide active">
+            <div class="slide-header" style="border: none; text-align: center; margin-top: 10vh;">
+                <p class="slide-subtitle">JSL シネマ REMASTER 🎬</p>
+                <h1 class="slide-title" style="font-size: 4.8rem; margin: 20px 0;">レガシーシステムから<br><span style="color: #E67E22;">モダンアーキテクチャ</span>への進化</h1>
+            </div>
+            <div class="slide-content" style="justify-content: center; text-align: center;">
+                <div class="point-box" style="border: none; background: transparent;">
+                    <p style="font-size: 1.5rem; color: #ccc;">単なる機能実装を超え、堅牢なエンタープライズシステムを構築した<br>バックエンドエンジニアとしての開発の軌跡。</p>
+                </div>
+            </div>
+            <div style="position: absolute; bottom:100px; right: 60px; text-align: right;">
+                <p style="font-size: 1.2rem; color: #888; letter-spacing: 1px;">Designed & Developed by</p>
+                <h3 style="font-size: 2.48rem; color: #E67E22; font-weight: 900; letter-spacing: 2px;">朴潤正 <span style="font-size: 1.4rem; color: #ccc;">(パク ユンジョン)</span></h3>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-header">
+                <p class="slide-subtitle">TABLE OF CONTENTS</p>
+                <h1 class="slide-title">目次 <span style="font-size: 1.5rem; color: #888; font-weight: 500;">(Index)</span></h1>
+            </div>
+
+        <!-- 02 -->           
+            <div class="slide-content" style="flex-direction: column; padding: 0 80px 40px 80px;">
+                <div style="display: flex; flex-direction: column; height: 100%; justify-content: space-between; font-size: 2.2rem; font-weight: 700;">
+                    
+                    <p style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
+                        <strong style="color: #E67E22; display: inline-block; width: 90px;">01.</strong> プロジェクト概要 
+                        <span style="font-size: 1.2rem; color: #888; font-weight: 500; margin-left: 20px; letter-spacing: 1px;">Project Overview</span>
+                    </p>
+                    <p style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
+                        <strong style="color: #E67E22; display: inline-block; width: 90px;">02.</strong> 技術スタックと設計 
+                        <span style="font-size: 1.2rem; color: #888; font-weight: 500; margin-left: 20px; letter-spacing: 1px;">Tech Stack & ERD</span>
+                    </p>
+                    <p style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
+                        <strong style="color: #E67E22; display: inline-block; width: 90px;">03.</strong> コア機能：認証とUI/UX 
+                        <span style="font-size: 1.2rem; color: #888; font-weight: 500; margin-left: 20px; letter-spacing: 1px;">Security & User Experience</span>
+                    </p>
+                    <p style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
+                        <strong style="color: #E67E22; display: inline-block; width: 90px;">04.</strong> コア機能：マスターデータ管理 
+                        <span style="font-size: 1.2rem; color: #888; font-weight: 500; margin-left: 20px; letter-spacing: 1px;">CMS & Master Data</span>
+                    </p>
+                    <p style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
+                        <strong style="color: #E67E22; display: inline-block; width: 90px;">05.</strong> コア機能：予約とトランザクション 
+                        <span style="font-size: 1.2rem; color: #888; font-weight: 500; margin-left: 20px; letter-spacing: 1px;">Concurrency & ACID Transaction</span>
+                    </p>
+                    <p style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
+                        <strong style="color: #E67E22; display: inline-block; width: 90px;">06.</strong> コア機能：非同期レビューと同期 
+                        <span style="font-size: 1.2rem; color: #888; font-weight: 500; margin-left: 20px; letter-spacing: 1px;">Async Review & State Sync</span>
+                    </p>
+                    <p style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
+                        <strong style="color: #E67E22; display: inline-block; width: 90px;">07.</strong> トラブルシューティング 
+                        <span style="font-size: 1.2rem; color: #888; font-weight: 500; margin-left: 20px; letter-spacing: 1px;">Troubleshooting</span>
+                    </p>
+                    <p style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; border-bottom: none;">
+                        <strong style="color: #E67E22; display: inline-block; width: 90px;">08.</strong> プロジェクトを通じた成長 
+                        <span style="font-size: 1.2rem; color: #888; font-weight: 500; margin-left: 20px; letter-spacing: 1px;">Conclusion & Retrospective</span>
+                    </p>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- 03 -->
+        <div class="slide">
+            <div class="slide-header">
+                <p class="slide-subtitle">01. PROJECT OVERVIEW</p>
+                <h1 class="slide-title">プロジェクト概要</h1>
+            </div>
+            <div class="slide-content">
+                <div class="half-col">
+                    <div class="point-box">
+                        <h3 style="color: #E67E22; margin-bottom: 10px;"><i class="fa-solid fa-clock-rotate-left"></i> 開発の背景 <span style="font-size: 1rem; color:#aaa; font-weight: normal;">(Background)</span></h3>
+                        <p>既存のJSPベースのレガシーシステムが抱えていた、<strong style="color:#fff;">セキュリティの脆弱性と決済トランザクション管理の限界</strong>を克服するため。</p>
+                    </div>
+                    <div class="point-box">
+                        <h3 style="color: #E67E22; margin-bottom: 10px;"><i class="fa-solid fa-bullseye"></i> プロジェクトの目的 <span style="font-size: 1rem; color:#aaa; font-weight: normal;">(Objective)</span></h3>
+                        <p>単に「動くもの」を作るのではなく、日本のSI現場で求められる<strong style="color:#fff;">バックエンドの基礎体力（SQL制御・例外処理）</strong>と堅牢なアーキテクチャ設計能力を証明すること。</p>
+                    </div>
+                    <div class="point-box">
+                        <h3 style="color: #E67E22; margin-bottom: 10px;"><i class="fa-solid fa-rocket"></i> アプローチ <span style="font-size: 1rem; color:#aaa; font-weight: normal;">(Approach)</span></h3>
+                        <p>最新の <strong style="color:#fff;">Spring Boot 3.5.9 と MyBatis</strong> を導入し、データ整合性(ACID)を保証するシステムへと全面リファクタリング(Remaster)。</p>
+                    </div>
+                </div>
+                
+                <div class="half-col" style="align-items: center;">
+                    <div style="width: 70%; height: 95%; background: rgba(0,0,0,0.3); border-radius: 16px; border: 1px dashed rgba(255,255,255,0.2); display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; box-shadow: 0 15px 30px rgba(0,0,0,0.3);">
+                        
+                        <img src="./assets/architecture.jpg" alt="System Architecture Diagram" style="width: 100%; height: 100%; object-fit: contain; padding: 0px;">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 04 -->
+        <div class="slide">
+            <div class="slide-header">
+                <p class="slide-subtitle">01. PROJECT OVERVIEW - Directory Structure</p>
+                <h1 class="slide-title">プロジェクト概要 <span style="font-size: 1.5rem; color: #888; font-weight: 500;">(パッケージ構造と役割 : 52Files)</span></h1>
+            </div>
+            <div class="slide-content">
+                
+                <div class="half-col" style="flex: 1.2;">
+                    <div style="background: rgba(0, 0, 0, 0.4); border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); padding: 25px; height: 100%; overflow-y: auto; font-family: 'Courier New', Courier, monospace; box-shadow: inset 0 5px 15px rgba(0,0,0,0.5);">
+                        <ul style="list-style: none; padding: 0; line-height: 1.6; font-size: 1.4rem; color: #ddd;">
+                            <li style="margin-bottom: 10px;">
+                                <i class="fa-solid fa-folder-open" style="color: #E67E22; margin-right: 8px;"></i><b>src/main/java/com/cinema</b>
+                                <ul style="list-style: none; padding-left: 24px; border-left: 1px dashed rgba(255,255,255,0.2); margin-left: 7px; margin-top: 5px;">
+                                    <li><i class="fa-solid fa-folder" style="color: #F1C40F; margin-right: 8px;"></i><b>config/ <span style="color: #888; font-size: 1.1rem; margin-left: 10px;">: 2 Settings</span></b>
+                                        <div style="padding-left: 26px; color: #999; font-size: 0.85rem;"><i class="fa-brands fa-java" style="margin-right: 5px;"></i>SecurityConfig, WebMvcConfig</div>
+                                    </li>
+                                    <li style="margin-top: 5px;"><i class="fa-solid fa-folder" style="color: #F1C40F; margin-right: 8px;"></i><b>controller/<span style="color: #E67E22; font-size: 1.0rem; margin-left: 10px;">: 10 Endpoints</span></b>
+                                        <div style="padding-left: 26px; color: #999; font-size: 0.85rem;"><i class="fa-brands fa-java" style="margin-right: 5px;"></i>Admin(Api, Movie, Schedule)/Main/Member/Movie/ReviewApi/Ticket(Api)Controller</div>
+                                    </li>
+                                    <li style="margin-top: 5px;"><i class="fa-solid fa-folder" style="color: #F1C40F; margin-right: 8px;"></i><b>service/<span style="color: #E67E22; font-size: 1.0rem; margin-left: 10px;">: 4 Modules</span></b>
+                                        <div style="padding-left: 26px; color: #999; font-size: 0.85rem;"><i class="fa-brands fa-java" style="margin-right: 5px;"></i>CustomUserDetailsService, Member/Movie/TicketService</div>
+                                    </li>
+                                    <li style="margin-top: 5px;"><i class="fa-solid fa-folder" style="color: #F1C40F; margin-right: 8px;"></i><b>mapper/<span style="color: #888; font-size: 1.0rem; margin-left: 10px;">: 6 Interfaces</span></b>
+                                        <div style="padding-left: 26px; color: #999; font-size: 0.85rem;"><i class="fa-brands fa-java" style="margin-right: 5px;"></i>Admin/Member/Movie/Review/Reservation/ScheduleMapper</div>
+                                    </li>
+                                    <li style="margin-top: 5px;"><i class="fa-solid fa-folder" style="color: #F1C40F; margin-right: 8px;"></i><b>domain/ & dto/<span style="color: #888; font-size: 1.0rem; margin-left: 10px;">: 5 Models</span></b>
+                                        <div style="padding-left: 26px; color: #999; font-size: 0.85rem;"><i class="fa-brands fa-java" style="margin-right: 5px;"></i>Member, Movie, Schedule & CustomUserDetails</div>
+                                    </li>
+                                </ul>
+                            </li>
+                            
+                            <li style="margin-top: 20px;">
+                                <i class="fa-solid fa-folder-open" style="color: #E67E22; margin-right: 8px;"></i><b>src/main/resources</b>
+                                <ul style="list-style: none; padding-left: 24px; border-left: 1px dashed rgba(255,255,255,0.2); margin-left: 7px; margin-top: 5px;">
+                                    <li><i class="fa-solid fa-folder" style="color: #3498DB; margin-right: 8px;"></i><b>mapper/<span style="color: #3498DB; font-size: 1.0rem; margin-left: 10px;">: 6 XML Queries</span></b>
+                                        <div style="padding-left: 26px; color: #999; font-size: 0.85rem;"><i class="fa-solid fa-file-code" style="margin-right: 5px;"></i>AdminMapper.xml, MemberMapper.xml, MovieMapper.xml, ReservationMapper.xml, ReviewMapper.xml, ScheduleMapper.xml</div>
+                                    </li>
+                                    <li style="margin-top: 5px;"><i class="fa-solid fa-folder" style="color: #3498DB; margin-right: 8px;"></i><b>templates/ & static/<span style="color: #3498DB; font-size: 1.0rem; margin-left: 10px;">: 19 Views</span></b>
+                                        <div style="padding-left: 26px; color: #999; font-size: 0.85rem;"><i class="fa-brands fa-html5" style="margin-right: 5px;"></i>admin(Dashboard, Movie_list, Movie_modify, Movie_Register, Reservation_list, Schedule_register) / layout / member(join, login) / movie(detail, list) / support(faq, privacy, terms) / ticket(my, reserve, seat) / index / css</div>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="half-col" style="flex: 0.8; justify-content: flex-start;">
+                    
+                    <div class="point-box" style="padding: 20px;">
+                        <h4 style="color: #fff; font-size: 1.2rem; margin-bottom: 8px;"><i class="fa-solid fa-gear" style="color:#E67E22; margin-right: 8px;"></i> config & dto</h4>
+                        <p style="font-size: 1.1rem; color: #ccc;">Spring Securityの認証フィルタおよび権限ルーティング設定と、データ転送オブジェクト(DTO)の管理。</p>
+                    </div>
+
+                    <div class="point-box" style="padding: 20px;">
+                        <h4 style="color: #fff; font-size: 1.2rem; margin-bottom: 8px;"><i class="fa-solid fa-network-wired" style="color:#E67E22; margin-right: 8px;"></i> controller</h4>
+                        <p style="font-size: 1.1rem; color: #ccc;">画面遷移(View)を担当する一般コントローラーと、非同期通信(AJAX)のJSONデータを返す <code>ApiController</code> の分離。</p>
+                    </div>
+
+                    <div class="point-box" style="padding: 20px;">
+                        <h4 style="color: #fff; font-size: 1.2rem; margin-bottom: 8px;"><i class="fa-solid fa-briefcase" style="color:#E67E22; margin-right: 8px;"></i> service</h4>
+                        <p style="font-size: 1.1rem; color: #ccc;">コアビジネスロジックの実装階層。決済や座席予約における <code>@Transactional</code> を用いたデータ整合性の保証。</p>
+                    </div>
+
+                    <div class="point-box" style="padding: 20px; border-bottom: none;">
+                        <h4 style="color: #fff; font-size: 1.2rem; margin-bottom: 8px;"><i class="fa-solid fa-database" style="color:#E67E22; margin-right: 8px;"></i> mapper & domain</h4>
+                        <p style="font-size: 1.05rem; color: #ccc;">MyBatisインターフェースとXMLマッピングによるSQL制御。Entity層(domain)を通じたDBテーブルとの1:1マッピング。</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- 05 -->
+        <div class="slide">
+            <div class="slide-header">
+                <p class="slide-subtitle">02. TECH STACK & ER-D</p>
+                <h1 class="slide-title">技術スタックとデータベース設計</h1>
+            </div>
+            <div class="slide-content">
+                
+                <div class="half-col" style="justify-content: flex-start; gap: 10px; padding-right: 15px;">
+                    <div class="point-box" style="padding: 15px 20px; margin-bottom: 8px;">
+                        <h4 style="color: #E67E22; font-size: 1.2rem; margin-bottom: 8px;"><i class="fa-brands fa-java" style="width: 25px;"></i> Java 17 & Spring Boot 3.5.10</h4>
+                        <p style="font-size: 1.1rem; color: #ccc; line-height: 1.4;">コアビジネスロジックの実装に集中。</p>
+                    </div>
+                    <div class="point-box" style="padding: 15px 20px; margin-bottom: 8px;">
+                        <h4 style="color: #E67E22; font-size: 1.2rem; margin-bottom: 8px;"><i class="fa-solid fa-database" style="width: 25px;"></i> MyBatis 3 & MySQL 8.0</h4>
+                        <p style="font-size: 1.1rem; color: #ccc; line-height: 1.4;">JPAに依存せずMyBatisを採用。日本のSI現場で求められる<strong style="color: #fff;">複雑なクエリの直接制御とチューニング能力</strong>を証明。</p>
+                    </div>
+                    <div class="point-box" style="padding: 15px 20px; margin-bottom: 8px;">
+                        <h4 style="color: #E67E22; font-size: 1.2rem; margin-bottom: 8px;"><i class="fa-solid fa-shield-halved" style="width: 25px;"></i> Spring Security 6</h4>
+                        <p style="font-size: 1.1rem; color: #ccc; line-height: 1.4;">SecurityFilterChain (Lambda DSL) を適用した堅牢な認証・認可ロジックの実装。</p>
+                    </div>
+                    <div class="point-box" style="padding: 15px 20px; margin-bottom: 8px;">
+                        <h4 style="color: #E67E22; font-size: 1.2rem; margin-bottom: 8px;"><i class="fa-brands fa-js" style="width: 25px;"></i> Vanilla JS & Fetch API</h4>
+                        <p style="font-size: 1.1rem; color: #ccc; line-height: 1.4;">React等に依存せず、DOM操作と非同期通信(AJAX)の原理を深く理解するため純粋なJSに固執。</p>
+                    </div>
+                    <div class="point-box" style="padding: 12px 20px; margin-bottom: 0;">
+                        <h4 style="color: #E67E22; font-size: 1.2rem; margin-bottom: 5px;"><i class="fa-brands fa-github" style="width: 25px;"></i> Git & GitHub</h4>
+                        <p style="font-size: 0.95rem; color: #ccc; line-height: 1.6;">コンフリクト解決やコミット履歴の管理を通じた、実務的なバージョン管理の経験。</p>
+                    </div>
+                </div>
+
+                <div class="half-col">
+                    <div style="flex: 1; background: rgba(0,0,0,0.2); border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 15px 30px rgba(0,0,0,0.3);">
+                        <div style="padding: 15px 20px; background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <h4 style="color: #fff; font-size: 1.1rem;"><i class="fa-solid fa-project-diagram" style="color:#E67E22; margin-right: 8px;"></i> Entity Relationship Diagram : マウスを乗せるとZOOM-IN</h4>
+                        </div>
+                        
+                        <div class="zoom-container" onmousemove="panZoom(event)" onmouseleave="resetZoom(event)">
+                            <img src="./assets/erd.png" alt="ER-Diagram" class="pan-zoom-img">   
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+                        <span style="background: rgba(230, 126, 34, 0.15); color: #E67E22; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; border: 1px solid rgba(230, 126, 34, 0.4);"><i class="fa-solid fa-link"></i> 外部キー(FK)参照整合性</span>
+                        <span style="background: rgba(230, 126, 34, 0.15); color: #E67E22; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; border: 1px solid rgba(230, 126, 34, 0.4);"><i class="fa-solid fa-clock-rotate-left"></i> Auditing (履歴追跡)</span>
+                        <span style="background: rgba(230, 126, 34, 0.15); color: #E67E22; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; border: 1px solid rgba(230, 126, 34, 0.4);"><i class="fa-solid fa-traffic-light"></i> 予約状態(Status)管理</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 06 -->
+        <div class="slide">
+            <div class="slide-header">
+                <p class="slide-subtitle">03. CORE FEATURE: SECURITY & UI/UX</p>
+                <h1 class="slide-title">コア機能：認証とユーザー体験</h1>
+            </div>
+            <div class="slide-content">
+                
+                <div class="half-col" style="justify-content: flex-start; gap: 15px; padding-right: 15px;">
+                    
+                    <div class="point-box" style="padding: 20px;">
+                        <h3 style="color: #E67E22; margin-bottom: 10px; font-size: 1.3rem;"><i class="fa-solid fa-shield-halved"></i> セキュリティと権限制御</h3>
+                        <p style="color: #ccc; font-size: 1.05rem; line-height: 1.6;"><code>CustomUserDetails</code> と Spring Security を用いた堅牢な認証システム。USER と ADMIN の権限を徹底的に分離し、不正なアクセスを遮断します。</p>
+                    </div>
+                    
+                    <div class="point-box" style="padding: 20px;">
+                        <h3 style="color: #E67E22; margin-bottom: 10px; font-size: 1.3rem;"><i class="fa-solid fa-wand-magic-sparkles"></i> 非同期トーストUIによるUX向上</h3>
+                        <p style="color: #ccc; font-size: 1.05rem; line-height: 1.6;">ログインや会員登録時、無機質な基本アラートではなく、<strong>SweetAlert2</strong> を用いた洗練されたトーストポップアップを導入し、ユーザー離脱率を低下させます。</p>
+                    </div>
+
+                    <div class="point-box" style="padding: 20px; background: rgba(230, 126, 34, 0.15); border-left-color: #F1C40F; border: 1px solid rgba(241, 196, 15, 0.3); border-left: 5px solid #F1C40F;">
+                        <h3 style="color: #F1C40F; margin-bottom: 12px; font-size: 1.3rem;"><i class="fa-solid fa-code-merge"></i> [Deep Dive] PRGパターンと状態伝達</h3>
+                        <p style="color: #eee; font-size: 1.05rem; line-height: 1.8;">
+                            <strong style="color:#E67E22;">課題:</strong> CUD(作成/更新/削除)処理後のリロードによるデータの二重送信。<br>
+                            <strong style="color:#E67E22;">解決:</strong> 処理後に必ずRedirectを行う <strong>PRG (Post-Redirect-Get) パターン</strong> を徹底。さらに <code>addFlashAttribute</code> を活用し、URLを汚さずにサーバーセッション経由で1回限りの安全なメッセージ伝達を実現しました。
+                        </p>
+                    </div>
+
+                </div>
+                
+                <div class="half-col" style="align-items: center; justify-content: center;">
+                    <div class="video-wrapper" style="width: 100%;">
+                        <iframe src="https://youtu.be/G86qKM8WrLM?si=vWpKdsDQ_qaJEk8z?rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <p style="margin-top: 20px; color: rgba(255,255,255,0.5); font-size: 1.1rem; letter-spacing: 1px;"><i class="fa-solid fa-circle-play"></i> 認証とトーストUIのデモ映像</p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 07 -->
+        <div class="slide">
+            <div class="slide-header">
+                <p class="slide-subtitle">04. CORE FEATURE: CMS(Content Management System) & MASTER DATA</p>
+                <h1 class="slide-title">コア機能：マスターデータ管理 <span style="font-size: 1.5rem; color: #888; font-weight: 500;">(管理者システム)</span></h1>
+            </div>
+            <div class="slide-content">
+                
+                <div class="half-col" style="justify-content: flex-start; gap: 15px; padding-right: 15px;">
+                    
+                    <div class="point-box" style="padding: 20px;">
+                        <h3 style="color: #E67E22; margin-bottom: 10px; font-size: 1.3rem;"><i class="fa-solid fa-file-image"></i> MultipartFileとI/O制御</h3>
+                        <p style="color: #ccc; font-size: 1.05rem; line-height: 1.6;">映画のポスター画像登録時、<code>MultipartFile</code> インターフェースを活用。UUIDを用いてファイル名の重複を防ぎ、DBのテキストデータと物理ファイルの保存を同期させるI/Oトランザクションを実装しました。</p>
+                    </div>
+                    
+                    <div class="point-box" style="padding: 20px;">
+                        <h3 style="color: #E67E22; margin-bottom: 10px; font-size: 1.3rem;"><i class="fa-solid fa-code-branch"></i> 多対多(N:M)関係の解消</h3>
+                        <p style="color: #ccc; font-size: 1.05rem; line-height: 1.6;">映画(1)と上映館(1)という独立したマスターデータを結びつけ、「スケジュール(N)」を動的に生成する直感的なCMS（コンテンツ管理システム）UIを構築しました。</p>
+                    </div>
+
+                    <div class="point-box" style="padding: 20px; background: rgba(230, 126, 34, 0.15); border-left-color: #F1C40F; border: 1px solid rgba(241, 196, 15, 0.3); border-left: 5px solid #F1C40F;">
+                        <h3 style="color: #F1C40F; margin-bottom: 12px; font-size: 1.3rem;"><i class="fa-solid fa-link"></i> [Deep Dive] データバインディングの最適化</h3>
+                        <p style="color: #eee; font-size: 1.05rem; line-height: 1.8;">
+                            <strong style="color:#E67E22;">課題:</strong> フロントエンドの時間データ形式とDB(Java)の形式不一致。<br>
+                            <strong style="color:#E67E22;">解決:</strong> HTML5の <code>&lt;input type="datetime-local"&gt;</code> から送信されるISO 8601文字列を、Springの <code>@DateTimeFormat</code> を活用してJavaの <code>LocalDateTime</code> へシームレスにバインディング。パース例外(Parse Exception)を未然に防ぎました。
+                        </p>
+                    </div>
+
+                </div>
+                
+                <div class="half-col" style="align-items: center; justify-content: center;">
+                    <div class="video-wrapper" style="width: 100%;">
+                        <iframe src="https://www.youtube.com/embed/-YB2bQ6MjOk?si=Ok9xUb6C6Fdzpbkv?rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    
+                    <div style="width: 100%; margin-top: 20px; padding: 15px 20px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.2);">
+                        <p style="color: #E67E22; font-weight: 700; font-size: 1.1rem; margin-bottom: 8px;"><i class="fa-solid fa-clapperboard"></i> CMSデモンストレーション</p>
+                        <ul style="color: #bbb; font-size: 0.95rem; line-height: 1.6; padding-left: 20px;">
+                            <li>ポスター画像の物理アップロードと静的リソースマッピング</li>
+                            <li>映画・上映館・日時を組み合わせたスケジュールの動的生成</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 08 -->
+        <div class="slide">
+            <div class="slide-header">
+                <p class="slide-subtitle">05. CORE FEATURE: CONCURRENCY & ACID TRANSACTION</p>
+                <h1 class="slide-title">コア機能：予約とトランザクション <span style="font-size: 1.5rem; color: #888; font-weight: 500;">(同時実行制御と決済)</span></h1>
+            </div>
+            <div class="slide-content">
+                
+                <div class="half-col" style="justify-content: flex-start; gap: 15px; padding-right: 15px;">
+                    
+                    <div class="point-box" style="padding: 20px;">
+                        <h3 style="color: #E67E22; margin-bottom: 10px; font-size: 1.3rem;"><i class="fa-solid fa-people-arrows"></i> 同時実行制御と座席先占</h3>
+                        <p style="color: #ccc; font-size: 1.05rem; line-height: 1.6;">複数ユーザーによる同一座席への同時アクセス（オーバーブッキング）を防ぐため、DBの制約条件と分離レベル(Isolation Level)を活用したリアルタイムな座席先占ロジックを実装しました。</p>
+                    </div>
+                    
+                    <div class="point-box" style="padding: 20px;">
+                        <h3 style="color: #E67E22; margin-bottom: 10px; font-size: 1.3rem;"><i class="fa-regular fa-credit-card"></i> 外部決済API(PortOne)連携</h3>
+                        <p style="color: #ccc; font-size: 1.05rem; line-height: 1.6;">フロントエンドで安全に決済モジュールを呼び出し、サーバー側で検証(Validation)を行うことで、データの改ざんを防ぎ信頼性の高い決済プロセスを構築しました。</p>
+                    </div>
+
+                    <div class="point-box" style="padding: 20px; background: rgba(230, 126, 34, 0.15); border-left-color: #F1C40F; border: 1px solid rgba(241, 196, 15, 0.3); border-left: 5px solid #F1C40F;">
+                        <h3 style="color: #F1C40F; margin-bottom: 12px; font-size: 1.3rem;"><i class="fa-solid fa-link-slash"></i> [Deep Dive] ACID原則と完全なロールバック</h3>
+                        <p style="color: #eee; font-size: 1.05rem; line-height: 1.8;">
+                            <strong style="color:#E67E22;">課題:</strong> 決済完了後にシステムエラーが発生した場合のデータ不整合。<br>
+                            <strong style="color:#E67E22;">解決:</strong> <code>「座席確保 ➔ 決済実行 ➔ ポイント減算 ➔ チケット発行」</code> の一連のプロセスを、Service階層で単一の <code>@Transactional</code> にバインド(Bind)。いずれかの段階で例外(Exception)が発生した場合は即座に完全なロールバック(Rollback)を行い、データ無欠性(Integrity)を保証しました。
+                        </p>
+                    </div>
+
+                </div>
+                
+                <div class="half-col" style="align-items: center; justify-content: center;">
+                    <div class="video-wrapper" style="width: 100%;">
+                        <iframe src="https://www.youtube.com/embed/QLginMznFNc?si=SuqsJF8xGktqQAOy?rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    
+                    <div style="width: 100%; margin-top: 20px; padding: 15px 20px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.2);">
+                        <p style="color: #E67E22; font-weight: 700; font-size: 1.1rem; margin-bottom: 8px;"><i class="fa-solid fa-clapperboard"></i> 予約・決済トランザクション デモ</p>
+                        <ul style="color: #bbb; font-size: 0.95rem; line-height: 1.6; padding-left: 20px;">
+                            <li>Fetch APIを用いたリアルタイム座席状態の同期</li>
+                            <li>PortOne API呼び出しと決済完了後のチケット自動発行フロー</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 09 -->
+        <div class="slide">
+            <div class="slide-header">
+                <p class="slide-subtitle">06. CORE FEATURE: ASYNC REVIEW & STATE SYNC</p>
+                <h1 class="slide-title">コア機能：非同期レビューと状態同期 <span style="font-size: 1.5rem; color: #888; font-weight: 500;">(コミュニティ機能)</span></h1>
+            </div>
+            <div class="slide-content">
+                
+                <div class="half-col" style="justify-content: flex-start; gap: 10px; padding-right: 15px;">
+                    
+                    <div class="point-box" style="padding: 20px;">
+                        <h3 style="color: #E67E22; margin-bottom: 5px; font-size: 1.3rem;"><i class="fa-solid fa-bolt"></i> 非同期CRUDとインライン編集</h3>
+                        <p style="color: #ccc; font-size: 1.05rem; line-height: 1.6;">Fetch APIを活用し、ページ遷移なしでレビューの作成・修正・削除が可能。修正時にはモーダルを開かず、その場で入力フォームに切り替わるインラインエディティング(Inline Editing)を実装しました。</p>
+                    </div>
+                    
+                    <div class="point-box" style="padding: 20px;">
+                        <h3 style="color: #E67E22; margin-bottom: 5px; font-size: 1.3rem;"><i class="fa-solid fa-rotate"></i> クライアント状態同期による負荷軽減</h3>
+                        <p style="color: #ccc; font-size: 1.05rem; line-height: 1.6;">レビュー更新の度にサーバーへ平均スコアの集計クエリを投げるのではなく、フロント側のJS <code>reduce()</code> 関数で計算し、DOMを直接更新する状態同期(State Synchronization)でサーバー負荷を軽減しました。</p>
+                    </div>
+
+                    <div class="point-box" style="padding: 20px; background: rgba(230, 126, 34, 0.15); border-left-color: #F1C40F; border: 1px solid rgba(241, 196, 15, 0.3); border-left: 5px solid #F1C40F;">
+                        <h3 style="color: #F1C40F; margin-bottom: 12px; font-size: 1.3rem;"><i class="fa-solid fa-user-shield"></i> [Deep Dive] 多層防御 (IDOR対策)</h3>
+                        <p style="color: #eee; font-size: 1.05rem; line-height: 1.8;">
+                            <strong style="color:#E67E22;">課題:</strong> フロントエンドのボタン非表示だけでは、APIの直接叩きによるデータ改ざん(IDOR攻撃)を防げない。<br>
+                            <strong style="color:#E67E22;">解決:</strong> Controller層で Spring Security の <code>Principal.getName()</code> から認証情報を取得し、MyBatisの <code>WHERE userid = #{userid}</code> 条件と結合。他人のデータを絶対に操作できないよう、バックエンドでの交差検証(Cross-validation)を徹底しました。
+                        </p>
+                    </div>
+
+                </div>
+                
+                <div class="half-col" style="align-items: center; justify-content: center;">
+                    <div class="video-wrapper" style="width: 100%;">
+                        <iframe src="https://www.youtube.com/embed/Dw4GGmoiQ7Q?si=J8ABdOwY8NsgbFec?rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    
+                    <div style="width: 100%; margin-top: 20px; padding: 15px 20px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.2);">
+                        <p style="color: #E67E22; font-weight: 700; font-size: 1.1rem; margin-bottom: 8px;"><i class="fa-solid fa-clapperboard"></i> 非同期レビュー＆状態同期 デモ</p>
+                        <ul style="color: #bbb; font-size: 0.95rem; line-height: 1.6; padding-left: 20px;">
+                            <li>ページリロードなしでのレビュー登録と平均評価の即時反映</li>
+                            <li>シームレスなUXを提供するインラインエディティング</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 10 -->
+        <div class="slide">
+            <div class="slide-header">
+                <p class="slide-subtitle">07. TROUBLESHOOTING & PROBLEM SOLVING</p>
+                <h1 class="slide-title">トラブルシューティングと問題解決</h1>
+            </div>
+            
+            <div class="slide-content" style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-content: start;">
+                
+                <div class="point-box" style="padding: 25px; margin-bottom: 0; background: rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.3);">
+                    <h3 style="color: #f87e7c; margin-bottom: 12px; font-size: 1.4rem;"><i class="fa-solid fa-triangle-exclamation"></i> &nbsp;&nbsp;1. AmbiguousMappingException</h3>
+                    <p style="color: #eee; font-size: 1.15rem; line-height: 1.8;">
+                        <strong style="color:#E67E22;">問題:</strong> サーバー初期化時、HandlerMappingで衝突が発生し起動失敗。<br>
+                        <strong style="color:#E67E22;">原因と解決:</strong> <code>MainController</code> と <code>MemberController</code> の両方に <code>GET /login</code> が存在。Springの「1つのURLは1つのメソッドにマッピングされる」という鉄則に基づき、スタブ(Stub)コードを削除してルーティングを整理しました。
+                    </p>
+                </div>
+
+                <div class="point-box" style="padding: 25px; margin-bottom: 0; background: rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.3);">
+                    <h3 style="color: #f87e7c; margin-bottom: 12px; font-size: 1.4rem;"><i class="fa-brands fa-git-alt"></i> &nbsp;&nbsp;2. Git履歴の乖離と強制同期</h3>
+                    <p style="color: #eee; font-size: 1.15rem; line-height: 1.8;">
+                        <strong style="color:#E67E22;">問題:</strong> ローカルとリモートの履歴(History)が乖離し <code>git pull</code> が競合(Conflict)。<br>
+                        <strong style="color:#E67E22;">原因と解決:</strong> Gitの保護メカニズムが作動したため、誤ったローカル変更を破棄。<code>git reset --hard origin/main</code> コマンドを使用してリモートの最新状態に強制同期させることで解決しました。
+                    </p>
+                </div>
+
+                <div class="point-box" style="padding: 25px; margin-bottom: 0; background: rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.3);">
+                    <h3 style="color: #f87e7c; margin-bottom: 12px; font-size: 1.4rem;"><i class="fa-solid fa-bug-slash"></i> &nbsp;&nbsp;3. PRGパターンとMVCデバッグ</h3>
+                    <p style="color: #eee; font-size: 1.15rem; line-height: 1.8;">
+                        <strong style="color:#E67E22;">問題:</strong> CUD作業後のリダイレクトとデータ検証の困難。<br>
+                        <strong style="color:#E67E22;">解決:</strong> クエリストリングではなく <code>addFlashAttribute</code> で安全な1回限りのToast UI伝達を実現。エラー発生時は、View ➔ Controller ➔ DB の順でデータのライフサイクルを逆追跡し、バインディング漏れを正確にデバッグしました。
+                    </p>
+                </div>
+
+                <div class="point-box" style="padding: 25px; margin-bottom: 0; background: rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.3);">
+                    <h3 style="color: #f87e7c; margin-bottom: 12px; font-size: 1.4rem;"><i class="fa-solid fa-database"></i> &nbsp;&nbsp;4. 複数座席の動的クエリバインディング</h3>
+                    <p style="color: #eee; font-size: 1.15rem; line-height: 1.8;">
+                        <strong style="color:#E67E22;">問題:</strong> 複数座席予約時、単一Stringの伝達によるMyBatis <code>IN</code> 句のバインディング失敗。<br>
+                        <strong style="color:#E67E22;">解決:</strong> <code>String.split()</code> で <code>List&lt;String&gt;</code> にパース。動的SQL(<code>&lt;foreach&gt;</code>)を活用し、要求数とロックを確保した座席数を交差検証するロジックへ改編。予約失敗率を0%へ改善しました。
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 11 -->
+        <div class="slide">
+            <div class="slide-header">
+                <p class="slide-subtitle">08. CONCLUSION & RETROSPECTIVE</p>
+                <h1 class="slide-title">プロジェクトを通じた成長 <span style="font-size: 1.5rem; color: #888; font-weight: 500;">(総括と今後の目標)</span></h1>
+            </div>
+            <div class="slide-content">
+                
+                <div class="half-col" style="justify-content: flex-start; gap: 10px; padding-right: 15px;">
+                    
+                    <div class="point-box" style="padding: 26px; border-left-color: #3498DB;">
+                        <h3 style="color: #3498DB; margin-bottom: 12px; font-size: 1.4rem;"><i class="fa-solid fa-layer-group"></i> &nbsp;&nbsp;1. アーキテクチャの本質的な理解</h3>
+                        <p style="color: #ccc; font-size: 1.1rem; line-height: 1.8;">レガシーJSPからSpring Bootへの移行を通じ、MVCパターンの本質と「関心事の分離(SoC)」の重要性を体感しました。各レイヤー(Controller, Service, Mapper)の責任を明確にする設計能力を養いました。</p>
+                    </div>
+                    
+                    <div class="point-box" style="padding: 26px; border-left-color: #E74C3C;">
+                        <h3 style="color: #E74C3C; margin-bottom: 10px; font-size: 1.4rem;"><i class="fa-solid fa-lock"></i> &nbsp;&nbsp;2. データ保護とバックエンドの責任</h3>
+                        <p style="color: #ccc; font-size: 1.1rem; line-height: 1.8;">トランザクション(ACID)制御と多層防御(Security)の実装により、企業が最も重視する「データ無欠性(Data Integrity)」を担保するロジックと、その重みを深く理解しました。</p>
+                    </div>
+
+                    <div class="point-box" style="padding: 26px; border-left-color: #2ECC71;">
+                        <h3 style="color: #2ECC71; margin-bottom: 12px; font-size: 1.4rem;"><i class="fa-solid fa-magnifying-glass-chart"></i> &nbsp;&nbsp;3. 自立的な問題解決能力</h3>
+                        <p style="color: #ccc; font-size: 1.1rem; line-height: 1.8;">単なる勘に頼るデバッグではなく、エラーログを精緻に分析し、公式ドキュメントやフレームワークの基本原則に立ち返ってバグを根本から解決するエンジニアリングの姿勢を獲得しました。</p>
+                    </div>
+
+                </div>
+                
+                <div class="half-col" style="align-items: center; justify-content: center; text-align: center;">
+                    <div style="width: 100%; height: 92%; padding: 50px 40px; background: rgba(0,0,0,0.2); border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 15px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden;">
+                        
+                        <i class="fa-solid fa-quote-left" style="font-size: 4rem; color: rgba(230, 126, 34, 0.1); position: absolute; top: 30px; left: 30px;"></i>
+                        
+                        <h2 style="font-size: 2.4rem; margin-bottom: 20px; color: #fff; position: relative; z-index: 1;">「コーダー」から<br><span style="color: #E67E22;">「エンジニア」</span>へ</h2>
+                        <p style="color: #aaa; font-size: 1.2rem; line-height: 1.8; margin-bottom: 40px; position: relative; z-index: 1;">
+                            本プロジェクトは、単なる機能実装の練習ではなく、<br>
+                            安定したシステムを設計・運用する<br>
+                            バックエンドエンジニアとしての第一歩です。
+                        </p>
+                        
+                        <div style="border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 40px; margin-bottom: 30px;">
+                            <h1 style="font-size: 4rem; color: #fff; letter-spacing: 5px; margin-bottom: 10px;">Thank You!</h1>
+                            <p style="color: #E67E22; font-size: 1.3rem; font-weight: bold;">ご清聴ありがとうございました。</p>
+                        </div>
+
+                        <a href="https://github.com/RUINFRITZ/JSL-Cinema-Boot" target="_blank" style="display: inline-block; padding: 15px 35px; background: #E67E22; color: #fff; text-decoration: none; border-radius: 30px; font-weight: bold; font-size: 1.2rem; transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 5px 15px rgba(230, 126, 34, 0.4);" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                            <i class="fa-brands fa-github" style="margin-right: 8px;"></i> GitHub Repository
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Controll Buttons -->
+        <div class="controls">
+            <button class="btn-nav" id="prevBtn"><i class="fa-solid fa-chevron-left"></i></button>
+            <div class="page-indicator"><span id="current-page">1</span> / <span id="total-page">2</span></div>
+            <button class="btn-nav" id="nextBtn"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+
+    </div>
+
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const currentPageEl = document.getElementById('current-page');
+        const totalPageEl = document.getElementById('total-page');
+        
+        let currentSlide = 0;
+        totalPageEl.innerText = slides.length;
+
+        function showSlide(index) {
+            if(index < 0) index = 0;
+            if(index >= slides.length) index = slides.length - 1;
+            
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            
+            currentSlide = index;
+            currentPageEl.innerText = currentSlide + 1;
+        }
+
+        nextBtn.addEventListener('click', () => showSlide(currentSlide + 1));
+        prevBtn.addEventListener('click', () => showSlide(currentSlide - 1));
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                showSlide(currentSlide + 1);
+            } else if (e.key === 'ArrowLeft') {
+                showSlide(currentSlide - 1);
+            }
+        });
+
+        /* === ERD Pan & Zoom Logic === */
+        function panZoom(e) {
+            const container = e.currentTarget;
+            const img = container.querySelector('.pan-zoom-img');
+            
+            const x = (e.offsetX / container.offsetWidth) * 125;
+            const y = (e.offsetY / container.offsetHeight) * 115;
+            img.style.transformOrigin = `${x}% ${y}%`;
+            img.style.transform = 'scale(3.0)';
+        }
+
+        function resetZoom(e) {
+            const container = e.currentTarget;
+            const img = container.querySelector('.pan-zoom-img');
+            
+            img.style.transformOrigin = 'center center';
+            img.style.transform = 'scale(1)';
+        }
+    </script>
+
+</body>
+
+</html>
