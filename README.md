@@ -25,10 +25,10 @@
 | **Framework** | Spring Boot | 3.5.9 | **[生産性とモダン開発]** AutoConfigurationにより設定を短縮し、予約・決済などのコアビジネスロジックの実装に集中。 |
 | **Database** | MySQL | 8.0.42 | **[データ整合性]** 映画予約システムの要であるトランザクション(ACID)処理を完璧に遂行するため。 |
 | **O/R Mapper** | MyBatis | 3.0.3 | **[SQL制御能力]** 日本のSI現場で求められる複雑なクエリ作成に対応するため、JPAではなくSQLの直接チューニングが可能なMyBatisを選定。 |
-| **Security** | Spring Security | 6.x | **[最新セキュリティ]** `SecurityFilterChain` (Lambda DSL) を適用し、堅牢な認証・認可ロジックを実装。 |
-| **Template** | Thymeleaf | 3.x | **[SSRの理解]** JSPの動作原理(SSR)を理解しつつ、HTML構造を崩さずに保守性を高めるため。 |
+| **Security** | Spring Security | 6.5.7 | **[最新セキュリティ]** `SecurityFilterChain` (Lambda DSL) を適用し、堅牢な認証・認可ロジックを実装。 |
+| **Template** | Thymeleaf | 3.1.3 | **[SSRの理解]** JSPの動作原理(SSR)を理解しつつ、HTML構造を崩さずに保守性を高めるため。 |
 | **Frontend** | Vanilla JS + Fetch | ES6+ | **[基礎体力]** React等に依存せず、DOM操作と非同期通信(Async/Await)の原理を深く理解するため純粋なJSに固執。 |
-| **Build Tool** | Gradle / STS | 8.x / 4.31 | **[効率性]** ビルド速度の改善と効率的な依存関係の管理。 |
+| **Build Tool** | Gradle / STS | 8 / 4.31 | **[効率性]** ビルド速度の改善と効率的な依存関係の管理。 |
 
 ---
 
