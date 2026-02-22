@@ -9,6 +9,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 /** **
  * 映画情報コントローラー
@@ -49,5 +52,26 @@ public class MovieController {
         // model.addAttribute("reviews", reviewService.getReviewsByMno(mno));
 
         return "movie/detail";
+    }
+    
+    /*
+     * 映画一覧および検索結果の表示
+     * URL: /movie/list?keyword=検索語
+     *
+     * @param keyword 検索キーワード（任意）
+     * @param model Viewへデータを渡すモデル
+     * @return 映画一覧画面 (movie/list)
+     */
+    @GetMapping("/list")
+    public String movieList(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
+        log.info(" - User: Movie List Page Accessed (Keyword: {})", keyword);
+
+        // キーワードに基づく動的検索を実行
+        List<Movie> movieList = movieService.getMovieList(keyword);
+        
+        model.addAttribute("movieList", movieList);
+        model.addAttribute("keyword", keyword); // 検索結果画面にキーワードを表示するため
+
+        return "movie/list";
     }
 }

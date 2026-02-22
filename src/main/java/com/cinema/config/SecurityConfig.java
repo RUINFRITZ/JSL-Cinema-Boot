@@ -50,7 +50,7 @@ public class SecurityConfig {
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/upload/**").permitAll()
                 
                 // 公開ページ (メイン、ログイン、会員登録) は誰でもアクセス可能
-                .requestMatchers("/", "/member/login", "/member/register", "/movie/**", "/api/review/list/**").permitAll()
+                .requestMatchers("/", "/member/login", "/member/register", "/movie/**", "/api/review/list/**", "/support/**").permitAll()
                 .requestMatchers("/ticket/**", "/member/update").authenticated()
                 // URLが '/admin/' で始まるリクエストは 'ADMIN' 権限を持つユーザーのみアクセス可能
                 // 一般ユーザーがアクセスしようとすると 403 (Forbidden) エラーまたはログイン画面へ転送されます
@@ -64,10 +64,10 @@ public class SecurityConfig {
             .formLogin(form -> form
                 .loginPage("/member/login")                 // カスタムログインページの URL
                 .loginProcessingUrl("/member/login")        // ログイン処理を実行する URL (HTMLフォームの action と一致させる)
-                .defaultSuccessUrl("/?welcome=true", true)        // ログイン成功時のリダイレクト先
+                .defaultSuccessUrl("/?welcome=true", true)	// ログイン成功時のリダイレクト先
                 .failureUrl("/member/login?error=true")     // ログイン失敗時のリダイレクト先
-                .usernameParameter("userid")         // ログインフォームのユーザー名 input の name 属性
-                .passwordParameter("password")       // ログインフォームのパスワード input の name 属性
+                .usernameParameter("userid")        		// ログインフォームのユーザー名 input の name 属性
+                .passwordParameter("password")     			// ログインフォームのパスワード input の name 属性
                 .permitAll()
             )
 
@@ -75,8 +75,8 @@ public class SecurityConfig {
             .logout(logout -> logout
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout")) // ログアウト処理の URL
                 .logoutSuccessUrl("/member/login?logout=true") // ログアウト成功時のリダイレクト先
-                .invalidateHttpSession(true)            // セッションを無効化
-                .deleteCookies("JSESSIONID")            // JSESSIONID クッキーを削除
+                .invalidateHttpSession(true)            	// セッションを無効化
+                .deleteCookies("JSESSIONID")         		// JSESSIONID クッキーを削除
                 .permitAll()
             );
 

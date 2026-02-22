@@ -21,11 +21,11 @@
     </insert>
 
 	<delete id="deleteReview">
-	    DELETE FROM review 
-	    WHERE rev_no = #{rev_no} AND userid = #{userid}
-	</delete>
-	
-	<update id="updateReview">
+        DELETE FROM review 
+        WHERE rev_no = #{revNo} AND userid = #{userid}
+    </delete>
+
+    <update id="updateReview">
         UPDATE review 
         SET star = #{star}, 
             comments = #{comments}, 

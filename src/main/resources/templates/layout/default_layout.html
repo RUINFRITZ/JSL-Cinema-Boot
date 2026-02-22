@@ -67,8 +67,8 @@
                 <a href="/movie/list" class="menu-item">
                     <i class="fa-solid fa-film"></i> 映画一覧
                 </a>
-                <a href="#" class="menu-item">
-                    <i class="fa-solid fa-solid fa-headset"></i> お客様サポート
+				<a href="/support/faq" class="menu-item">
+                    <i class="fa-solid fa-headset"></i> お客様サポート
                 </a>
                 
                 <th:block sec:authorize="hasRole('ADMIN')">
@@ -97,13 +97,19 @@
         </div>
     </header>
 
+	
     <div layout:fragment="content" class="container"></div>
-
-    <footer>
-        <p>&copy; 2026 JSL シネマ : Spring Boot Remaster Project. All rights reserved.</p>
-        <p>Designed by ルインフリツ</p>
+	
+	
+	<footer style="text-align: center; padding: 40px 20px; color: #888; margin-top: 50px;">
+			<div style="margin-bottom: 2px;">
+	            <a href="/support/terms" style="color: #666; text-decoration: none; margin: 0 8px; font-weight: 500; transition: color 0.3s;" onmouseover="this.style.color='#000'" onmouseout="this.style.color='#666'">利用規約</a>
+	            <a href="/support/privacy" style="color: #666; text-decoration: none; margin: 0 8px; font-weight: 500; transition: color 0.3s;" onmouseover="this.style.color='#000'" onmouseout="this.style.color='#666'">プライバシーポリシー</a>
+	        	Designed by ルインフリツ
+	        </div>
+	        <p style="margin-bottom: 4px;">&copy; 2026 JSL シネマ : Spring Boot Remaster Project. All rights reserved.</p>
     </footer>
-
+	
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const hamburger = document.getElementById('hamburgerBtn');

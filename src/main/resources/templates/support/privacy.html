@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<div layout:fragment="content">
+    <style>
+        .support-container { padding: 60px 20px; max-width: 900px; margin: 0 auto; }
+        
+        .glass-support-card {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+        }
+
+        .support-title {
+            font-size: 2rem; font-weight: 900; color: #1a1a1a;
+            margin-bottom: 30px; padding-left: 15px;
+            border-left: 6px solid var(--primary-color);
+            letter-spacing: -1px;
+        }
+
+        .terms-content {
+            height: 500px; overflow-y: auto; color: #444;
+            padding-right: 20px; line-height: 1.8; font-size: 1.05rem;
+        }
+        
+        .terms-content h5 { color: #222; font-weight: 800; margin-top: 35px; margin-bottom: 15px; font-size: 1.2rem; }
+        .terms-content p { margin-bottom: 15px; }
+
+        /* スクロールバーのカスタマイズ (テーマカラー適用) */
+        .terms-content::-webkit-scrollbar { width: 8px; }
+        .terms-content::-webkit-scrollbar-thumb { background: rgba(255, 107, 0, 0.4); border-radius: 4px; }
+        .terms-content::-webkit-scrollbar-thumb:hover { background: rgba(255, 107, 0, 0.7); }
+        .terms-content::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.03); border-radius: 4px; }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(10px);
+            color: #444; padding: 15px 35px; font-size: 1.1rem; font-weight: 700;
+            border-radius: 16px; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: 0 5px 15px rgba(0,0,0,0.03); text-decoration: none;
+        }
+        .btn-back:hover { background: rgba(255, 255, 255, 0.9); color: #000; transform: translateY(-2px); }
+    </style>
+
+    <div class="support-container">
+        <div class="glass-support-card">
+            <h3 class="support-title">プライバシーポリシー</h3>
+
+            <div class="terms-content">
+                <h5 style="margin-top: 0;">1. 個人情報の収集について</h5>
+                <p>JSLシネマ（以下「当社」）は、会員登録、チケット予約、お問い合わせ等のサービスをご利用いただく際に、以下の個人情報を収集いたします。<br>
+                - 氏名、ID、パスワード<br>
+                - 生年月日、電話番号</p>
+
+                <h5>2. 個人情報の利用目的</h5>
+                <p>収集した個人情報は、以下の目的のために利用いたします。<br>
+                1. 本サービスの提供・運営のため<br>
+                2. ユーザーからのお問い合わせに回答するため<br>
+                3. 重要なお知らせやキャンペーン情報の配信のため</p>
+
+                <h5>3. 個人情報の第三者提供</h5>
+                <p>当社は、法令に基づく場合を除き、あらかじめユーザーの同意を得ることなく、第三者に個人情報を提供することはありません。</p>
+
+                <h5>4. 個人情報の管理</h5>
+                <p>当社は、ユーザーの個人情報を正確かつ最新の状態に保ち、個人情報への不正アクセス・紛失・破損・改ざん・漏洩などを防止するため、セキュリティシステムの維持・管理体制の整備等の必要な措置を講じます。</p>
+
+                <h5>5. お問い合わせ窓口</h5>
+                <p>本ポリシーに関するお問い合わせは、カスタマーセンターまでお願いいたします。</p>
+                
+                <br><br>
+                <p style="text-align: right; color: #888; font-size: 0.9rem;">最終改定日：2026年 2月 22日</p>
+            </div>
+            
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="javascript:history.back()" class="btn-back">
+                    <i class="fa-solid fa-arrow-left"></i> 戻る
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

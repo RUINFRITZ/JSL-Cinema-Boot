@@ -45,4 +45,40 @@ public class MainController {
 
         return "index";
     }
+    
+    /*
+     * プライバシーポリシー画面への遷移
+     * フッターの「プライバシーポリシー」リンクから呼び出されます。
+     *
+     * @return "support/privacy" (src/main/resources/templates/support/privacy.html)
+     */
+    @GetMapping("/support/privacy")
+    public String privacy() {
+        log.info(" - User: Privacy Policy Page Accessed");
+        return "support/privacy";
+    }
+
+    /*
+     * 利用規約画面への遷移
+     * フッターの「利用規約」リンクから呼び出されます。
+     *
+     * @return "support/terms" (src/main/resources/templates/support/terms.html)
+     */
+    @GetMapping("/support/terms")
+    public String terms() {
+        log.info(" - User: Terms of Service Page Accessed");
+        return "support/terms";
+    }
+    
+    /*
+     * よくあるご質問 (FAQ) 画面への遷移
+     * ヘッダーの「お客様サポート」リンクから呼び出されます。
+     *
+     * @return "support/faq" (src/main/resources/templates/support/faq.html)
+     */
+    @GetMapping("/support/faq")
+    public String faq() {
+        log.info(" - User: FAQ Page Accessed");
+        return "support/faq";
+    }
 }

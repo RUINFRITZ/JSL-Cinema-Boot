@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<div layout:fragment="content">
+    <style>
+        /* === Glassmorphism List Layout === */
+        .list-container { padding: 12px 20px; max-width: 1400px; margin: 0 auto; }
+        
+        .list-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        .list-header h2 { font-size: 2.2rem; font-weight: 800; color: #222; margin-top: 10px !important; margin-bottom: 14px !important;  }
+        .list-header p { font-size: 1.1rem; color: #666; }
+        .keyword-highlight { color: var(--primary-color); font-weight: 900; }
+		
+		.movie-grid {
+		            display: grid;
+		            /* 1fr(可変)の代わりに320pxで固定し、無条件で4つ並べる */
+		            grid-template-columns: repeat(4, 320px); 
+		            justify-content: center; /* 画面の中央に配置 */
+		            gap: 40px; 
+		        }
+
+        .movie-card {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 16px;
+            padding: 15px; 
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15); 
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            text-decoration: none !important; 
+            color: inherit;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25); 
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+		.movie-card img {
+            width: 100%;       /* カード内の幅(320px - padding 30px = 290px)に合わせる */
+            height: 450px;     /* 290pxの1.5倍 (2:3比率) に高さを完全固定 */
+            object-fit: cover; /* 枠に合わせて綺麗にクロップ（トリミング）する */
+            border-radius: 16px;
+            margin-bottom: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .movie-card h3 {
+            font-size: 1.5rem;
+            font-weight: 750;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .movie-card p {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 10px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; 
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            height: 2.8em; 
+        }
+
+        /* 検索結果がない場合のUX向上のための「一覧へ戻る」ボタン */
+        .btn-return-list {
+            display: inline-block;
+            background: var(--primary-color);
+            color: #fff;
+            padding: 15px 35px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            border-radius: 16px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(255, 107, 0, 0.2);
+            margin-top: 25px;
+        }
+        .btn-return-list:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(255, 107, 0, 0.3);
+            background: var(--primary-hover);
+            color: #fff;
+        }
+
+        .empty-result {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 80px 20px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 20px;
+            color: #888;
+            font-size: 1.2rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+    </style>
+
+    <div class="list-container">
+        
+        <div class="list-header">
+            <h2 th:if="${keyword == null or keyword == ''}">上映中の映画一覧</h2>
+            <h2 th:unless="${keyword == null or keyword == ''}">
+                "<span class="keyword-highlight" th:text="${keyword}"></span>" の検索結果
+            </h2>
+            <p>JSL シネマが厳選した最高の映画をお楽しみください。</p>
+        </div>
+
+        <div class="movie-grid">
+            <a th:href="@{/movie/detail/{mno}(mno=${movie.mno})}" class="movie-card" th:each="movie : ${movieList}">
+                <img th:src="@{'/upload/' + ${movie.poster}}" alt="Movie Poster" onerror="this.src='/images/default_poster.jpg'">
+                <div>
+                    <h3 th:text="${movie.title}" th:title="${movie.title}">映画タイトル</h3>
+                    <p th:text="${movie.catchphrase}">キャッチフレーズ</p>
+                </div>
+            </a>
+
+            <div th:if="${movieList == null or movieList.isEmpty()}" class="empty-result">
+                <i class="fa-solid fa-magnifying-glass" style="font-size: 3.5rem; color: #ccc; margin-bottom: 20px;"></i>
+                <p style="margin-bottom: 10px;">条件に一致する映画が見つかりませんでした。</p>
+                <p style="font-size: 1rem; color: #aaa;">別のキーワードをお試しいただくか、全体リストをご確認ください。</p>
+                
+                <a th:href="@{/movie/list}" class="btn-return-list">
+                    <i class="fa-solid fa-list-ul" style="margin-right: 8px;"></i> すべての映画を見る
+                </a>
+            </div>
+        </div>
+        
+    </div>
+</div>
+</html>

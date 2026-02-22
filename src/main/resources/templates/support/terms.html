@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<div layout:fragment="content">
+    <style>
+        .support-container { padding: 60px 20px; max-width: 900px; margin: 0 auto; }
+        .glass-support-card { background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.7); border-radius: 30px; padding: 50px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05); }
+        .support-title { font-size: 2rem; font-weight: 900; color: #1a1a1a; margin-bottom: 30px; padding-left: 15px; border-left: 6px solid var(--primary-color); letter-spacing: -1px; }
+        .terms-content { height: 500px; overflow-y: auto; color: #444; padding-right: 20px; line-height: 1.8; font-size: 1.05rem; }
+        .terms-content h5 { color: #222; font-weight: 800; margin-top: 35px; margin-bottom: 15px; font-size: 1.2rem; }
+        .terms-content p { margin-bottom: 15px; }
+        .terms-content::-webkit-scrollbar { width: 8px; }
+        .terms-content::-webkit-scrollbar-thumb { background: rgba(255, 107, 0, 0.4); border-radius: 4px; }
+        .terms-content::-webkit-scrollbar-thumb:hover { background: rgba(255, 107, 0, 0.7); }
+        .terms-content::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.03); border-radius: 4px; }
+        .btn-back { background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(10px); color: #444; padding: 15px 35px; font-size: 1.1rem; font-weight: 700; border-radius: 16px; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 10px; border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: 0 5px 15px rgba(0,0,0,0.03); text-decoration: none; }
+        .btn-back:hover { background: rgba(255, 255, 255, 0.9); color: #000; transform: translateY(-2px); }
+    </style>
+
+    <div class="support-container">
+        <div class="glass-support-card">
+            <h3 class="support-title">利用規約</h3>
+
+            <div class="terms-content">
+                <h5 style="margin-top: 0;">第1条（目的）</h5>
+                <p>本規約は、JSLシネマ（以下「当社」といいます。）が提供するオンライン映画予約サービス（以下「本サービス」といいます。）の利用条件を定めるものです。</p>
+
+                <h5>第2条（会員登録）</h5>
+                <p>1. 本サービスの利用希望者は、当社の定める方法によって利用登録を申請し、当社がこれを承認することによって会員登録が完了するものとします。<br>
+                2. 当社は、利用登録の申請者に虚偽の事項があった場合、登録を拒否することがあります。</p>
+
+                <h5>第3条（チケットの購入・キャンセル）</h5>
+                <p>1. 会員は、本サービスを通じて映画チケットの予約・購入を行うことができます。<br>
+                2. 購入完了後のキャンセルは、上映開始20分前まで可能です。それ以降のキャンセルおよび返金は一切受け付けません。<br>
+                3. システム障害等により予約が正常に完了しなかった場合、当社は速やかにポイント返還等の措置を講じます。</p>
+
+                <h5>第4条（禁止事項）</h5>
+                <p>ユーザーは、本サービスの利用にあたり、以下の行為をしてはなりません。<br>
+                1. 法令または公序良俗に違反する行為<br>
+                2. 犯罪行為に関連する行為<br>
+                3. 当社のサーバーまたはネットワークの機能を破壊したり，妨害したりする行為<br>
+                4. 他のユーザーになりすます行為</p>
+
+                <h5>第5条（サービス内容の変更等）</h5>
+                <p>当社は、ユーザーに通知することなく、本サービスの内容を変更しまたは本サービスの提供を中止することができるものとし、これによってユーザーに生じた損害について一切の責任を負いません。</p>
+                
+                <br><br>
+                <p style="text-align: right; color: #888; font-size: 0.9rem;">施行日：2026年 2月 22日</p>
+            </div>
+            
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="javascript:history.back()" class="btn-back">
+                    <i class="fa-solid fa-arrow-left"></i> 戻る
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

@@ -45,4 +45,11 @@ public interface MovieMapper {
      * @return 映画エンティティ
      */
     Movie selectMovieDetail(@Param("mno") Long mno);
+    
+    /*
+     * 映画リストの照会（検索対応）
+     * キーワードが存在する場合はタイトルおよびキャッチフレーズによる曖昧検索(LIKE)を実行します。
+     * @param keyword 検索キーワード（null可）
+     */
+    List<Movie> selectMovieList(@Param("keyword") String keyword);
 }

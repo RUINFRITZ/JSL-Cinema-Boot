@@ -7,47 +7,124 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
+		/* === Glassmorphism Layout & Typography === */
         .detail-container { padding: 60px 20px; max-width: 1300px; margin: 0 auto; }
         
+        /* メインのグラスモフィズムカード */
         .glass-detail-card {
-            background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 30px; padding: 50px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1); display: grid; grid-template-columns: 450px 1fr; gap: 60px;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(25px); 
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 30px; 
+            padding: 50px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
+            display: grid; 
+            grid-template-columns: 450px 1fr; 
+            gap: 60px;
         }
         
         .detail-poster-wrapper { position: sticky; top: 100px; }
-        .detail-poster { width: 100%; border-radius: 16px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); object-fit: cover; }
-        .info-header { border-bottom: 2px solid rgba(0, 0, 0, 0.05); padding-bottom: 25px; margin-bottom: 35px; }
+        .detail-poster { 
+            width: 100%; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 20px rgba(255, 107, 0, 0.2); 
+            object-fit: cover; 
+			
+        }
+        
+        .info-header { border-bottom: 2px solid rgba(0, 0, 0, 0.03); padding-bottom: 25px; margin-bottom: 35px; }
         .info-title { font-size: 3.5rem; font-weight: 900; margin-bottom: 15px; letter-spacing: -2px; color: #1a1a1a; }
-        .info-meta { display: flex; gap: 25px; color: #666; font-weight: 700; font-size: 1.1rem; }
-        .summary-section { line-height: 2; color: #333; font-size: 1.15rem; margin-bottom: 45px; }
+        .info-meta { display: flex; gap: 25px; color: #666; font-weight: 700; font-size: 1.1rem; align-items: center;}
+        .info-meta i { color: #999; } /* アイコンの色を少し落として文字を際立たせる */
+        
+        .summary-section { line-height: 2; color: #444; font-size: 1.15rem; margin-bottom: 45px; }
         .summary-section h3 { font-size: 1.5rem; font-weight: 800; margin-bottom: 20px; color: #000; }
         
+        /* === Buttons === */
         .action-btns { display: flex; align-items: center; gap: 20px; }
         .action-btns a { text-decoration: none !important; }
         
         .btn-reserve-lg {
-            margin-left: auto; background: var(--primary-color); color: #fff; padding: 18px 45px;
-            font-size: 1.3rem; font-weight: 800; border-radius: 16px; transition: all 0.3s ease;
-            box-shadow: 0 10px 20px rgba(255, 107, 0, 0.2); display: inline-flex; 
-            align-items: center; gap: 12px; border: none; cursor: pointer;
+            margin-left: auto; 
+            background: var(--primary-color); 
+            color: #fff; 
+            padding: 18px 45px;
+            font-size: 1.3rem; 
+            font-weight: 800; 
+            border-radius: 16px; 
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(255, 107, 0, 0.2); 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 12px; 
+            border: none; 
+            cursor: pointer;
         }
-        .btn-reserve-lg:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(255, 107, 0, 0.3); background: var(--primary-hover); }
+        .btn-reserve-lg:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 15px 30px rgba(255, 107, 0, 0.3); 
+            background: var(--primary-hover); 
+        }
 
+        /* 戻るボタンのグラスモフィズム対応 (灰色から半透明のすりガラス風に変更) */
         .btn-back {
-            background: rgba(0, 0, 0, 0.05); color: #333; padding: 18px 30px; font-size: 1.1rem; font-weight: 700;
-            border-radius: 16px; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 10px;
-            border: 1px solid rgba(0, 0, 0, 0.08); text-decoration: none;
+            background: rgba(255, 255, 255, 0.4); 
+            backdrop-filter: blur(10px);
+            color: #444; 
+            padding: 18px 30px; 
+            font-size: 1.1rem; 
+            font-weight: 700;
+            border-radius: 16px; 
+            transition: all 0.3s ease; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.8); 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
         }
-        .btn-back:hover { background: rgba(0, 0, 0, 0.1); color: #000; }
+        .btn-back:hover { 
+            background: rgba(255, 255, 255, 0.8); 
+            color: #000; 
+            transform: translateY(-2px);
+        }
 
-        .star-rating-input { display: flex; gap: 5px; font-size: 1.8rem; cursor: pointer; justify-content: flex-start; margin-bottom: 22px; }
-        .star-rating-input i { color: #ccc; transition: color 0.2s; }
+        /* === Review Section === */
+        .star-rating-input { display: flex; gap: 5px; font-size: 1.8rem; cursor: pointer; justify-content: flex-start; margin-bottom: 20px; }
+        .star-rating-input i { color: #ddd; transition: color 0.2s, transform 0.2s; }
         .star-rating-input i.active { color: #FFD700; }
+        .star-rating-input i:hover { transform: scale(1.1); } /* ホバー時の微細なアニメーション */
 
-        .review-panel { background: rgba(255, 255, 255, 0.5); border-radius: 16px; padding: 35px; margin-top: 50px; border: 1px solid rgba(0, 0, 0, 0.1); }
-        .review-write-box { display: flex; flex-direction: column; width: 100%; }
-        .review-textarea { width: 95%; height: 100px; padding: 15px; border-radius: 16px; resize: none; border: 1px solid rgba(0, 0, 0, 0.1); background: white; margin-bottom: 22px; }
+		.review-panel { 
+	        background: rgba(255, 255, 255, 0.4); 
+	        border-radius: 20px; 
+	        padding: 40px; 
+	        margin-top: 50px; 
+	        border: 1px solid rgba(255, 255, 255, 0.6); 
+	        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08); /* 影を追加 */
+	    }
+        
+		.review-write-box { display: flex; flex-direction: column; width: 100%; }
+        
+		.review-textarea { 
+            width: 93%; 
+            height: 128px; 
+            padding: 20px; 
+            border-radius: 16px; 
+            resize: none; 
+            border: 1px solid rgba(0, 0, 0, 0.1); /* 薄い灰色の枠線 */
+            background: rgba(255, 255, 255, 0.6); 
+            margin-bottom: 22px;
+            font-size: 1.05rem;
+            color: #333;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.03);
+            transition: border-color 0.3s, background-color 0.3s;
+        }
+        .review-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: rgba(255, 255, 255, 0.9);
+        }
         
         .review-submit-wrapper { text-align: right; width: 100%; }
     </style>
@@ -67,9 +144,10 @@
                     <div class="info-meta">
                         <span><i class="fa-regular fa-clock"></i> [[${movie.runtime}]] 分</span>
                         <span><i class="fa-regular fa-calendar-check"></i> 公開日: [[${movie.opendate}]]</span>
-                        <span><i class="fa-solid fa-star" style="color: #FFD700;"></i> 
-                            <span th:text="${movie.avgRating != null ? #numbers.formatDecimal(movie.avgRating, 1, 1) : '0.0'}">0.0</span>
-                        </span>
+						<span style="display: flex; align-items: center; gap: 5px;">
+                            <i class="fa-solid fa-star" style="color: #FFD700; font-size: 1.2rem;"></i> 
+						    <strong id="avgRatingDisplay" style="color: #000; font-size: 1.2rem;" th:text="${movie.avgRating != null ? #numbers.formatDecimal(movie.avgRating, 1, 1) : '0.0'}">0.0</strong>
+						</span>
                     </div>
                 </div>
 
@@ -103,7 +181,7 @@
                         </div>
                         <textarea id="reviewComments" class="review-textarea" placeholder="映画の感想を聞かせてください。"></textarea>
                         <div class="review-submit-wrapper">
-                            <button type="button" class="btn-reserve-lg" style="margin-left: 0;" onclick="submitReview()">投稿する</button>
+                            <button type="button" class="btn-reserve-lg" style="margin-left: 0; padding: 15px 35px; font-size: 1.1rem;" onclick="submitReview()">投稿する</button>
                         </div>
                     </div>
 
@@ -173,18 +251,29 @@
 	            }
 	        }
 
-	        /*
+			/*
 	         * レビュー一覧取得およびレンダリング
+	         * 取得したレビューデータをもとに、画面上部の平均星評価も動的に更新します。
 	         */
 	        async function loadReviews() {
-	            try {
+				try {
 	                const response = await fetch(`/api/review/list/${mno}`);
 	                const reviews = await response.json();
 	                const container = document.getElementById('reviewListContainer');
 	                
+	                // 上部の平均評価スコアを動的に更新するロジック
+	                const avgDisplay = document.getElementById('avgRatingDisplay');
+	                if (reviews && reviews.length > 0) {
+	                    const totalStar = reviews.reduce((sum, r) => sum + r.star, 0);
+	                    const avg = (totalStar / reviews.length).toFixed(1);
+	                    avgDisplay.innerText = avg;
+	                } else {
+	                    avgDisplay.innerText = '0.0';
+	                }
+
 	                if (!reviews || reviews.length === 0) {
 	                    container.innerHTML = `
-	                        <div style="text-align: center; padding: 30px; color: #999;">
+	                        <div style="text-align: center; padding: 40px; color: #999; background: rgba(255,255,255,0.3); border-radius: 16px;">
 	                            現在、投稿されたレビューはございません。<br>
 	                            最初のレビューを投稿してみませんか？
 	                        </div>`;
@@ -196,21 +285,21 @@
 	                    const safeComments = r.comments ? r.comments.replace(/`/g, '\\`').replace(/\n/g, '\\n') : '';
 
 	                    return `
-	                        <div id="review-box-${r.rev_no}" style="padding: 20px; border-bottom: 1px solid rgba(0,0,0,0.05); text-align: left;">
+	                        <div id="review-box-${r.rev_no}" style="padding: 22px 20px; border-bottom: 1px solid rgba(0,0,0,0.1); text-align: left;">
 	                            <div style="display:flex; justify-content:space-between; align-items:center;">
-	                                <strong>${r.userid}</strong>
+	                                <strong style="font-size: 1.1rem; color: #222;">${r.userid}</strong>
 	                                <div style="display:flex; align-items:center; gap: 15px;">
-	                                    <span style="color: #FFD700;">${'★'.repeat(r.star)}${'☆'.repeat(5-r.star)}</span>
+	                                    <span style="color: #FFD700; letter-spacing: 2px;">${'★'.repeat(r.star)}${'☆'.repeat(5-r.star)}</span>
 	                                    ${isOwner ? `
 	                                        <div>
-	                                            <button onclick="showEditForm(${r.rev_no}, ${r.star}, \`${safeComments}\`)" style="background:none; border:none; color:var(--primary-color); cursor:pointer; font-weight:bold;">修正</button> <span style="color:#ccc;">|</span> 
-	                                            <button onclick="deleteReview(${r.rev_no})" style="background:none; border:none; color:#999; cursor:pointer; font-weight:bold;">削除</button>
+	                                            <button onclick="showEditForm(${r.rev_no}, ${r.star}, \`${safeComments}\`)" style="background:none; border:none; color:var(--primary-color); cursor:pointer; font-weight:700;">修正</button> <span style="color:#ddd; margin: 0 5px;">|</span> 
+	                                            <button onclick="deleteReview(${r.rev_no})" style="background:none; border:none; color:#999; cursor:pointer; font-weight:600; transition: color 0.2s;" onmouseover="this.style.color='#ff4d4d'" onmouseout="this.style.color='#999'">削除</button>
 	                                        </div>
 	                                    ` : ''}
 	                                </div>
 	                            </div>
-	                            <p style="margin: 10px 0; color: #444; line-height: 1.6;">${r.comments}</p>
-	                            <small style="color: #999;">${r.regdate}</small>
+	                            <p style="margin: 15px 0; color: #555; line-height: 1.8; font-size: 1.05rem;">${r.comments}</p>
+	                            <small style="color: #aaa; font-size: 0.9rem;">${r.regdate}</small>
 	                        </div>
 	                    `;
 	                }).join('');
@@ -233,7 +322,8 @@
 	                confirmButtonColor: '#ff4d4d',
 	                cancelButtonColor: '#999',
 	                confirmButtonText: '削除する',
-	                cancelButtonText: 'キャンセル'
+	                cancelButtonText: 'キャンセル',
+                    borderRadius: '16px' // アラートも少し丸みを持たせる
 	            }).then(async (result) => {
 	                if (result.isConfirmed) {
 	                    try {
@@ -246,7 +336,9 @@
                                     title: '削除完了',
                                     text: 'レビューが削除されました。',
                                     icon: 'success',
-                                    confirmButtonColor: 'var(--primary-color)'
+                                    confirmButtonColor: 'var(--primary-color)',
+                                    timer: 1500,
+                                    showConfirmButton: false
                                 });
 	                            loadReviews();
 	                        } else {
@@ -273,16 +365,16 @@
 	            }
 
 	            box.innerHTML = `
-	                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
-	                    <strong>${currentLoginUser}</strong>
-	                    <select id="edit-star-${rev_no}" style="padding: 5px; border-radius: 8px; border: 1px solid #ccc;">
+	                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+	                    <strong style="color: #222;">${currentLoginUser}</strong>
+	                    <select id="edit-star-${rev_no}" style="padding: 8px 12px; border-radius: 8px; border: 1px solid #ddd; outline:none;">
 	                        ${starOptions}
 	                    </select>
 	                </div>
-	                <textarea id="edit-comments-${rev_no}" style="width: 100%; height: 80px; padding: 10px; border-radius: 12px; resize: none; border: 1px solid #ccc; margin-bottom: 10px;">${currentComments}</textarea>
+	                <textarea id="edit-comments-${rev_no}" style="width: 100%; height: 90px; padding: 15px; border-radius: 12px; resize: none; border: 1px solid var(--primary-color); margin-bottom: 15px; outline:none;">${currentComments}</textarea>
 	                <div style="text-align: right;">
-	                    <button onclick="loadReviews()" style="padding: 8px 15px; border-radius: 8px; border: 1px solid #ccc; background: white; cursor: pointer; color: #666;">キャンセル</button>
-	                    <button onclick="updateReview(${rev_no})" style="padding: 8px 15px; border-radius: 8px; border: none; background: var(--primary-color); color: white; cursor: pointer; margin-left: 5px;">保存する</button>
+	                    <button onclick="loadReviews()" style="padding: 10px 20px; border-radius: 10px; border: 1px solid #ccc; background: white; cursor: pointer; color: #666; transition: 0.2s;">キャンセル</button>
+	                    <button onclick="updateReview(${rev_no})" style="padding: 10px 20px; border-radius: 10px; border: none; background: var(--primary-color); color: white; cursor: pointer; margin-left: 8px; transition: 0.2s;">保存する</button>
 	                </div>
 	            `;
 	        }

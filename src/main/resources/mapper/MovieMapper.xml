@@ -38,4 +38,15 @@
         DELETE FROM movie WHERE mno = #{mno}
     </delete>
 
+	<select id="selectMovieList" resultType="com.cinema.domain.Movie">
+        SELECT * FROM movie
+        <where>
+            <if test="keyword != null and keyword != ''">
+                title LIKE CONCAT('%', #{keyword}, '%')
+                OR catchphrase LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+        </where>
+        ORDER BY title ASC
+    </select>
+
 </mapper>

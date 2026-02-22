@@ -33,6 +33,7 @@ public class MovieService {
 
     /*
      * 映画リスト全件取得
+     * 
      * @return 映画リスト
      */
     public List<Movie> getMovieList() {
@@ -41,11 +42,23 @@ public class MovieService {
 
     /*
      * 映画詳細情報取得
+     * 
      * @param mno 映画番号 (PK)
      * @return 映画情報
      */
     public Movie getMovieDetail(Long mno) {
         return movieMapper.selectMovieDetail(mno);
+    }
+    
+    /*
+     * 映画一覧の取得（検索対応）
+     * ユーザーが入力したキーワードに基づいて、該当する映画リストをフィルタリングして返却します。
+     * 
+     * @param keyword 検索キーワード（タイトルまたはキャッチフレーズ）
+     * @return 検索条件に一致する映画エンティティのリスト
+     */
+    public List<Movie> getMovieList(String keyword) {
+    	return movieMapper.selectMovieList(keyword);
     }
 
     /*

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<div layout:fragment="content">
+    <style>
+        /* === Glassmorphism FAQ Layout === */
+        .support-container { padding: 60px 20px; max-width: 900px; margin: 0 auto; }
+        
+        .glass-support-card {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+        }
+
+        .support-title {
+            font-size: 2.2rem; font-weight: 900; color: #1a1a1a;
+            margin-bottom: 40px; padding-left: 15px;
+            border-left: 6px solid var(--primary-color);
+            letter-spacing: -1px;
+        }
+
+        /* アコーディオンUIのスタイリング */
+        .faq-list { margin-bottom: 30px; }
+        
+        .faq-item {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+        }
+
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #222;
+            padding: 15px 10px;
+            transition: color 0.3s ease, background 0.3s ease;
+            border-radius: 12px;
+        }
+
+        .faq-question:hover {
+            color: var(--primary-color);
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        .faq-question i {
+            color: var(--primary-color);
+            transition: transform 0.4s ease;
+        }
+
+        .faq-question.active i {
+            transform: rotate(180deg); /* クリック時に矢印を反転 */
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.4s ease, opacity 0.4s ease, padding 0.4s ease;
+            color: #555;
+            line-height: 1.8;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            margin: 0 10px;
+        }
+
+        .faq-answer.show {
+            max-height: 200px;
+            opacity: 1;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(10px);
+            color: #444; padding: 15px 35px; font-size: 1.1rem; font-weight: 700;
+            border-radius: 16px; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: 0 5px 15px rgba(0,0,0,0.03); text-decoration: none;
+        }
+        .btn-back:hover { background: rgba(255, 255, 255, 0.9); color: #000; transform: translateY(-2px); }
+    </style>
+
+    <div class="support-container">
+        <div class="glass-support-card">
+            <h3 class="support-title">よくあるご質問 (FAQ)</h3>
+
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span><i class="fa-solid fa-q" style="margin-right: 10px;"></i> チケットのキャンセルはいつまで可能ですか？</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        上映開始の20分前までキャンセルが可能です。マイページの「予約内訳」よりキャンセル手続きを行ってください。それ以降のキャンセルおよび返金はシステム上お受けできかねますのでご了承ください。
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span><i class="fa-solid fa-q" style="margin-right: 10px;"></i> 外部からの飲食物の持ち込みは可能ですか？</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        他のお客様のご迷惑となる場合や、衛生管理の観点から、外部からの飲食物の持ち込みは固くお断りしております。館内の売店（コンセッション）にてポップコーンやドリンクをご購入いただけます。
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span><i class="fa-solid fa-q" style="margin-right: 10px;"></i> 決済完了後に座席を変更することはできますか？</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        決済完了後の座席変更は対応しておりません。お手数ですが、一度ご予約をキャンセルしていただき、再度ご希望の座席でご予約をお願いいたします。（※キャンセル料はかかりません）
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span><i class="fa-solid fa-q" style="margin-right: 10px;"></i> 上映時間に遅れても入場できますか？</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        他のお客様のご鑑賞の妨げとなるため、本編開始後20分を過ぎてからのご入場はお断りしております。お時間に余裕を持ってご来場いただきますようお願い申し上げます。
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span><i class="fa-solid fa-q" style="margin-right: 10px;"></i> 子供料金は何歳から適用されますか？</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        子供料金は、3歳以上から中学生以下のお客様に適用されます。3歳未満のお子様は、保護者の方の膝の上でのご鑑賞に限り無料でご入場いただけます。（※座席が必要な場合は料金が発生します）
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="javascript:history.back()" class="btn-back">
+                    <i class="fa-solid fa-arrow-left"></i> 前の画面へ戻る
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const questions = document.querySelectorAll('.faq-question');
+
+            questions.forEach(question => {
+                question.addEventListener('click', () => {
+                    const answer = question.nextElementSibling;
+                    const isActive = question.classList.contains('active');
+
+                    // 一旦すべてのFAQを閉じる（1つだけ開く仕様）
+                    document.querySelectorAll('.faq-answer').forEach(ans => ans.classList.remove('show'));
+                    document.querySelectorAll('.faq-question').forEach(q => q.classList.remove('active'));
+
+                    // クリックしたものが閉じていた場合のみ開く
+                    if (!isActive) {
+                        question.classList.add('active');
+                        answer.classList.add('show');
+                    }
+                });
+            });
+        });
+    </script>
+</div>
+</html>
